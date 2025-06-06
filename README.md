@@ -46,3 +46,11 @@ You should see the result printed
 Fifty
 ```
 
+### Step 5: Clean project
+
+Remove all generated files
+
+```bash
+make clean
+```
+
