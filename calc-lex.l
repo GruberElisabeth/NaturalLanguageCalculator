@@ -1,8 +1,8 @@
 %option noyywrap
 %{
 #include <stdlib.h>
-/*#include (add yacc here)*/
-%}
+#include "y.tab.h"%
+}
 
 UNIT            zero|one|two|three|four|five|six|seven|eight|nine|first|second|third|fifth|eighth|ninth
 TEEN            ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twelfth
@@ -13,59 +13,64 @@ EXP             (to the power|power|to the)
 FACT            factorial
 NEG             negative
 INTEGER         ({UNIT}|{TEEN}|{TEN}|({TEN}{UNIT})|({UNIT}{HUNDRED})+({UNIT}|{TEEN}|{TEN}|({TEN}{UNIT}))?)
-DOUBLE          {INTEGER}{POINT}{UNIT}*
+DOUBLE          {INTEGER}{POINT}{UNIT}+
+NUM             ({INTEGER} | {DOUBLE})
 EXPONENTIAL     {INTEGER}{EXP}{INTEGER}
 FACTORIAL       {INTEGER}{FACT}
 NEGATION        {NEG}{INTEGER}
+OPERATOR        plus|minus|times|divide by
+LPAREN          open[ \t]*parenthesis
+RPAREN          close[ \t]*parenthesis
+
 
 %%
 
 [ \t\n]                 {/*skip blanks*/}
 "and"|"by"|"of"|"th"    {/*ignore*/}
 
-"zero"              {yylval = 0; return UNIT;}
-"one"|"first"       {yylval = 1; return UNIT;}
-"two"|"second"      {yylval = 2; return UNIT;}
-"three"|"third"     {yylval = 3; return UNIT;}
-"four"              {yylval = 4; return UNIT;}
-"five"|"fifth"      {yylval = 5; return UNIT;}
-"six"               {yylval = 6; return UNIT;}
-"seven"             {yylval = 7; return UNIT;}
-"eight"|"eighth"    {yylval = 8; return UNIT;}
-"nine"|"ninth"      {yylval = 9; return UNIT;}
+"zero"              {yylval.value = 0; return UNIT;}
+"one"|"first"       {yylval.value = 1; return UNIT;}
+"two"|"second"      {yylval.value = 2; return UNIT;}
+"three"|"third"     {yylval.value = 3; return UNIT;}
+"four"              {yylval.value = 4; return UNIT;}
+"five"|"fifth"      {yylval.value = 5; return UNIT;}
+"six"               {yylval.value = 6; return UNIT;}
+"seven"             {yylval.value = 7; return UNIT;}
+"eight"|"eighth"    {yylval.value = 8; return UNIT;}
+"nine"|"ninth"      {yylval.value = 9; return UNIT;}
 
-"ten"               {yylval = 10; return TEEN;}
-"eleven"            {yylval = 11; return TEEN;}
-"twelve"|"twelfth"  {yylval = 12; return TEEN;}
-"thirteen"          {yylval = 13; return TEEN;}
-"fourteen"          {yylval = 14; return TEEN;}
-"fifteen"           {yylval = 15; return TEEN;}
-"sixteen"           {yylval = 16; return TEEN;}
-"seventeen"         {yylval = 17; return TEEN;}
-"eighteen"          {yylval = 18; return TEEN;}
-"nineteen"          {yylval = 19; return TEEN;}
+"ten"               {yylval.value = 10; return TEEN;}
+"eleven"            {yylval.value = 11; return TEEN;}
+"twelve"|"twelfth"  {yylval.value = 12; return TEEN;}
+"thirteen"          {yylval.value = 13; return TEEN;}
+"fourteen"          {yylval.value = 14; return TEEN;}
+"fifteen"           {yylval.value = 15; return TEEN;}
+"sixteen"           {yylval.value = 16; return TEEN;}
+"seventeen"         {yylval.value = 17; return TEEN;}
+"eighteen"          {yylval.value = 18; return TEEN;}
+"nineteen"          {yylval.value = 19; return TEEN;}
 
-"twenty"|"twentieth"    {yylval = 20; return TEN;}
-"thirty"|"thirtieth"    {yylval = 30; return TEN;}
-"forty"|"fortieth"      {yylval = 40; return TEN;}
-"fifty"|"fiftieth"      {yylval = 50; return TEN;}
-"sixty"|"sixtieth"      {yylval = 60; return TEN;}
-"seventy"|"seventieth"  {yylval = 70; return TEN;}
-"eighty"|"eightieth"    {yylval = 80; return TEN;}
-"ninety"|"ninetieth"    {yylval = 90; return TEN;}
+"twenty"|"twentieth"    {yylval.value = 20; return TEN;}
+"thirty"|"thirtieth"    {yylval.value = 30; return TEN;}
+"forty"|"fortieth"      {yylval.value = 40; return TEN;}
+"fifty"|"fiftieth"      {yylval.value = 50; return TEN;}
+"sixty"|"sixtieth"      {yylval.value = 60; return TEN;}
+"seventy"|"seventieth"  {yylval.value = 70; return TEN;}
+"eighty"|"eightieth"    {yylval.value = 80; return TEN;}
+"ninety"|"ninetieth"    {yylval.value = 90; return TEN;}
 
-"hundred"       {yylval = 100; return HUNDRED;}
-"thousand"      {yylval = 1000; return HUNDRED;}
-"million"       {yylval = 1000000; return HUNDRED;}
-"billion"       {yylval = 1000000000; return HUNDRED;}
+"hundred"       {yylval.value = 100; return HUNDRED;}
+"thousand"      {yylval.value = 1000; return HUNDRED;}
+"million"       {yylval.value = 1000000; return HUNDRED;}
+"billion"       {yylval.value = 1000000000; return HUNDRED;}
 
-"sum"|"plus"|"add"                  {yylval = '+'; return OPERATOR;}
-"difference"|"minus"|"subtract"     {yylval = '-'; return OPERATOR;}
-"multiplication"|"times"|"multiply" {yylval = '*'; return OPERATOR;}
-"division"|"divide"                 {yylval = '/'; return OPERATOR;}
+"plus"                              {yylval.op = '+'; return OPERATOR;}
+"minus"                             {yylval.op = '-'; return OPERATOR;}
+"times"                             {yylval.op = '*'; return OPERATOR;}
+"division"|"divide"                 {yylval.op = '/'; return OPERATOR;}
 
-"open"[ ]*"parenthesis"             {yylval = '('; return PARENTHESIS;}
-"close"[ ]*"parenthesis"            {yylval = ')'; return PARENTHESIS;}
+"open"[ ]*"parenthesis"             {yylval.op = '('; return LPAREN;}
+"close"[ ]*"parenthesis"            {yylval.op = ')'; return RPAREN;}
 
 "point"                             {return POINT;}
 
@@ -73,5 +78,5 @@ NEGATION        {NEG}{INTEGER}
 
 "factorial"                         {return FACT;}
 
-"negative"                          {yylval = '-'; return NEG;}
+"negative"                          {yylval.op = '-'; return NEG;}
 %%
