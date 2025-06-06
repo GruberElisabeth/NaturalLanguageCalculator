@@ -11,10 +11,12 @@ HUNDRED         hundred|thousand|million|billion
 POINT           point
 EXP             (to the power|power|to the)
 FACT            factorial
+NEG             negative
 INTEGER         ({UNIT}|{TEEN}|{TEN}|({TEN}{UNIT})|({UNIT}{HUNDRED})+({UNIT}|{TEEN}|{TEN}|({TEN}{UNIT}))?)
 DOUBLE          {INTEGER}{POINT}{UNIT}*
 EXPONENTIAL     {INTEGER}{EXP}{INTEGER}
 FACTORIAL       {INTEGER}{FACT}
+NEGATION        {NEG}{INTEGER}
 
 %%
 
@@ -70,4 +72,6 @@ FACTORIAL       {INTEGER}{FACT}
 "to the"|"power"|"to the power"     {return EXP;}
 
 "factorial"                         {return FACT;}
+
+"negative"                          {yylval = '-'; return NEG;}
 %%
