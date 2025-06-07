@@ -1,7 +1,8 @@
 %option noyywrap
 %{
 #include <stdlib.h>
-#include "y.tab.h"%
+#include <stdbool.h>
+#include "y.tab.h"
 }
 
 UNIT            zero|one|two|three|four|five|six|seven|eight|nine|first|second|third|fifth|eighth|ninth
@@ -21,7 +22,10 @@ NEGATION        {NEG}{INTEGER}
 OPERATOR        plus|minus|times|divide by
 LPAREN          open[ \t]*parenthesis
 RPAREN          close[ \t]*parenthesis
-
+WHILE           while
+IF              if  
+ELSE            else
+BOOLEAN         (true|false)
 
 %%
 
@@ -79,4 +83,11 @@ RPAREN          close[ \t]*parenthesis
 "factorial"                         {return FACT;}
 
 "negative"                          {yylval.op = '-'; return NEG;}
+
+"while"                             {return WHILE;}
+"if"                                {return IF;}
+"else"                              {return ELSE;}
+
+"true"|"is true"                    {yylval.value = true; return BOOLEAN;}
+"false"|"is false"                  {yylval.value = false; return BOOLEAN;}
 %%

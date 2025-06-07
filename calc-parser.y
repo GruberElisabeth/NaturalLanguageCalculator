@@ -13,7 +13,7 @@ void yyerror(const char *s)
 }
 
 int yylex(void);
-struct symtab* table;
+struct node* table;
 
 %}
 
@@ -23,11 +23,11 @@ struct symtab* table;
         char op;
        }
 
-%token <value> UNIT TEEN TEN HUNDRED INTEGER DOUBLE NUM
-%token <op> POINT EXP FACT NEG OPERATOR PARENTHESIS
+%token <value> UNIT TEEN TEN HUNDRED INTEGER DOUBLE NUM BOOLEAN
+%token <op> POINT EXP FACT NEG OPERATOR LPAREN RPAREN
 %token IF
 %token WHILE
-%token DO
+%token ELSE
 %token <lexeme> ID
 
 %type <value> expr
@@ -56,7 +56,7 @@ expr  : NUM {$$ = $1;}
             }
         }
       | expr FACT {
-            if(typeof($1) == INTEGER){
+            if((int)$1 == $1 && $1 >= 0){
                 $$ = factorial($1);
             }else{
                 yyerror("factorial can just be made for positive Integer");
@@ -64,23 +64,17 @@ expr  : NUM {$$ = $1;}
             }
       | NEG expr  {$$ = - $2;}
       | expr EXP expr {$$ = pow($1, $3);}
-      | PARENTHESIS expr PARENTHESIS {
-            if(($1 == LPAREN) && ($3 == RPAREN)){
-                $$ = $2;
-            }else{
-                yyerror("parenthesis don't match expectations");
-            }
-            
-            }
-      | WHILE '(' boolexpr ')' expr {}
-      | IF '(' boolexpr ')' expr {}
+      | LPAREN expr RPAREN {$$ = $2;}
+      | WHILE LPAREN boolexpr RPAREN expr 
+      | IF LPAREN boolexpr RPAREN expr ELSE expr {$$ = $3?$5:$7;}
       ;
 
 assignment  : ID '=' expr {}
             ;
 
 insertation : INTEGER ID '=' expr {}
-            | DOUBLE ID '=' {}
+            | DOUBLE ID '=' expr {}
+            | BOOLEAN ID '=' expr {}
             ;
 
 boolexpr    : 
