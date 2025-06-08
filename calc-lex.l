@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "y.tab.h"
-}
+%}
 
 UNIT            zero|one|two|three|four|five|six|seven|eight|nine|first|second|third|fifth|eighth|ninth
 TEEN            ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twelfth
@@ -95,4 +95,10 @@ RELATION        greater|smaller|equal|equals
 "greater"                           {yylval.value = '>'; return RELATION;}
 "equal"|"equals"                    {yylval.value = '='; return RELATION;}
 "smaller"                           {yylval.value = '<'; return RELATION;}
+
 %%
+
+int main() {
+    yylex();
+    return 0;
+}
