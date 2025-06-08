@@ -3,7 +3,7 @@
 #include <string.h>
 
 
-typedef struct node {
+typedef struct Node {
     char name[256];
     char type[256];
     int valInt;
@@ -22,3 +22,5 @@ Node* deleteItem(Node* list, char name[]);
 int getInt(Node* list, char name[]);
 double getDouble(Node* list, char name[]);
 bool getBoolean(Node* list, char name[]);
+
+bool findDouble(Node* list, char name[]);
