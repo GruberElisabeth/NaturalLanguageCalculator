@@ -2,7 +2,13 @@
 %{
 #include <stdlib.h>
 #include <stdbool.h>
-#include "y.tab.h"
+#include "calc-parser.tab.h"
+
+// Debugging function to print token details
+void print_token(const char* token_name, int value) {
+    printf("TOKEN: %-10s (value: %d)\n", token_name, value);
+}
+
 %}
 
 UNIT            zero|one|two|three|four|five|six|seven|eight|nine|first|second|third|fifth|eighth|ninth
@@ -30,12 +36,12 @@ RELATION        greater|smaller|equal|equals
 
 %%
 
-[ \t\n]                 {/*skip blanks*/}
+[ \t]                 {/*skip blanks*/}
 "and"|"by"|"of"|"th"|"than"    {/*ignore*/}
 
-"zero"              {yylval.value = 0; return UNIT;}
-"one"|"first"       {yylval.value = 1; return UNIT;}
-"two"|"second"      {yylval.value = 2; return UNIT;}
+"zero"              { yylval.value = 0; return UNIT; }
+"one"|"first"       { yylval.value = 1;  return UNIT; }
+"two"|"second"      { yylval.value = 2; return UNIT; }
 "three"|"third"     {yylval.value = 3; return UNIT;}
 "four"              {yylval.value = 4; return UNIT;}
 "five"|"fifth"      {yylval.value = 5; return UNIT;}
@@ -69,10 +75,10 @@ RELATION        greater|smaller|equal|equals
 "million"       {yylval.value = 1000000; return HUNDRED;}
 "billion"       {yylval.value = 1000000000; return HUNDRED;}
 
-"plus"                              {yylval.op = '+'; return PLUS;}
-"minus"                             {yylval.op = '-'; return MINUS;}
-"times"                             {yylval.op = '*'; return TIMES;}
-"division"|"divide"                 {yylval.op = '/'; return DIVIDE;}
+"plus"              { yylval.op = '+'; return PLUS; }
+"minus"             { yylval.op = '-';  return MINUS; }
+"times"             { yylval.op = '*'; return TIMES; }
+"divide"            { yylval.op = '/'; return DIVIDE; }
 
 "open"[ ]*"parenthesis"             {yylval.op = '('; return LPAREN;}
 "close"[ ]*"parenthesis"            {yylval.op = ')'; return RPAREN;}
@@ -95,5 +101,7 @@ RELATION        greater|smaller|equal|equals
 "greater"                           {yylval.value = '>'; return RELATION;}
 "equal"|"equals"                    {yylval.value = '='; return RELATION;}
 "smaller"                           {yylval.value = '<'; return RELATION;}
+
+\n      {return '\n';}
 
 %%

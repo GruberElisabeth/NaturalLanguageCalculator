@@ -16,7 +16,11 @@ void yyerror(const char *s)
 int yylex(void);
 struct node* table;
 
+//#define YYDEBUG 1  // Enable debug mode
+
 %}
+
+//%debug
 
 
 %union {
@@ -24,12 +28,13 @@ struct node* table;
         char op;
        }
 
+
 %token <value> UNIT TEEN TEN HUNDRED INTEGER DOUBLE NUM BOOLEAN
 %token <op> POINT EXP FACT NEG PLUS MINUS TIMES DIVIDE LPAREN RPAREN RELATION
 %token IF
 %token WHILE
 %token ELSE
-%token <lexeme> ID
+%token <value> ID
 
 %type <value> expr
 %type <value> line
@@ -48,8 +53,8 @@ struct node* table;
 
 %%
 line  : expr '\n'      {$$ = $1; printf("Result: %f\n", $$); exit(0);}
-      | assignment '\n'
-      | insertation '\n'
+      | assignment '\n'  { printf("Assignment complete\n"); exit(0);}
+      | insertation '\n' { printf("Insertation complete\n"); exit(0);}
       ;
 
 
@@ -57,7 +62,7 @@ expr  : NUM                 {$$ = $1;}
       | UNIT                {$$ = $1;}
       | TEEN                {$$ = $1;}
       | TEN                 {$$ = $1;}
-      | expr PLUS expr       { $$ = $1 + $3; }
+      | expr PLUS expr      { $$ = $1 + $3;}
       | expr MINUS expr      { $$ = $1 - $3; }
       | expr TIMES expr      { $$ = $1 * $3; }
       | expr DIVIDE expr     { $$ = $1 / $3; }
@@ -75,12 +80,12 @@ expr  : NUM                 {$$ = $1;}
       | IF LPAREN boolexpr RPAREN expr ELSE expr %prec LOWEST {$$ = $3?$5:$7;}
       ;
 
-assignment  : ID '=' expr {}
+assignment  : ID '=' expr    { $$ = $3; /* Add symbol table update here */ }
             ;
 
-insertation : INTEGER ID '=' expr {}
-            | DOUBLE ID '=' expr {}
-            | BOOLEAN ID '=' expr {}
+insertation : INTEGER ID '=' expr { $$ = $4; /* Add symbol table insert */ }
+            | DOUBLE ID '=' expr  { $$ = $4; /* Add symbol table insert */ }
+            | BOOLEAN ID '=' expr { $$ = $4; /* Add symbol table insert */ }
             ;
 
 boolexpr    : BOOLEAN {$$ = $1;}
@@ -95,8 +100,11 @@ boolexpr    : BOOLEAN {$$ = $1;}
 	
 int main(void)
 {
-  return yyparse();}
-
+    printf("Enter expressions (Ctrl+D to exit):\n");
+    while (yyparse() == 0) {
+    }
+    return 0;
+}
 
 
 int factorial(int n){
