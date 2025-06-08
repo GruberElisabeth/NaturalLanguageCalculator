@@ -2,7 +2,7 @@
 %{
 #include <stdlib.h>
 #include <stdbool.h>
-#include "calc-parser.tab.h"
+#include "y.tab.h"
 %}
 
 UNIT            zero|one|two|three|four|five|six|seven|eight|nine|first|second|third|fifth|eighth|ninth
@@ -26,11 +26,12 @@ WHILE           while
 IF              if  
 ELSE            else
 BOOLEAN         (true|false)
+RELATION        greater|smaller|equal|equals
 
 %%
 
 [ \t\n]                 {/*skip blanks*/}
-"and"|"by"|"of"|"th"    {/*ignore*/}
+"and"|"by"|"of"|"th"|"than"    {/*ignore*/}
 
 "zero"              {yylval.value = 0; return UNIT;}
 "one"|"first"       {yylval.value = 1; return UNIT;}
@@ -90,4 +91,9 @@ BOOLEAN         (true|false)
 
 "true"|"is true"                    {yylval.value = true; return BOOLEAN;}
 "false"|"is false"                  {yylval.value = false; return BOOLEAN;}
+
+"greater"                           {yylval.value = '>'; return RELATION;}
+"equal"|"equals"                    {yylval.value = '='; return RELATION;}
+"smaller"                           {yylval.value = '<'; return RELATION;}
+
 %%
