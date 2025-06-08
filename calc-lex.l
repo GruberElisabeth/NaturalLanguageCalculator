@@ -125,6 +125,8 @@ VOLUME          ((milli)?liter)s?
 {TIME}                              {yylval.measure = remove_trailing_s(yytext); RETURN TIME;}               
 {VOLUME}                            {yylval.measure = remove_trailing_s(yytext); RETURN VOLUME;}
 
+{MEASURE}                           ({SPACE})|({WEIGHT})|({TIME})|({VOLUME})
+
 
 \n      {return '\n';}
 
