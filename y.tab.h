@@ -69,10 +69,11 @@ extern int yydebug;
     OPERATOR = 270,                /* OPERATOR  */
     LPAREN = 271,                  /* LPAREN  */
     RPAREN = 272,                  /* RPAREN  */
-    IF = 273,                      /* IF  */
-    WHILE = 274,                   /* WHILE  */
-    ELSE = 275,                    /* ELSE  */
-    ID = 276                       /* ID  */
+    RELATION = 273,                /* RELATION  */
+    IF = 274,                      /* IF  */
+    WHILE = 275,                   /* WHILE  */
+    ELSE = 276,                    /* ELSE  */
+    ID = 277                       /* ID  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -96,10 +97,11 @@ extern int yydebug;
 #define OPERATOR 270
 #define LPAREN 271
 #define RPAREN 272
-#define IF 273
-#define WHILE 274
-#define ELSE 275
-#define ID 276
+#define RELATION 273
+#define IF 274
+#define WHILE 275
+#define ELSE 276
+#define ID 277
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -111,7 +113,7 @@ union YYSTYPE
         char op;
        
 
-#line 115 "y.tab.h"
+#line 117 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

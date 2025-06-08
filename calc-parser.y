@@ -24,7 +24,7 @@ struct node* table;
        }
 
 %token <value> UNIT TEEN TEN HUNDRED INTEGER DOUBLE NUM BOOLEAN
-%token <op> POINT EXP FACT NEG OPERATOR LPAREN RPAREN
+%token <op> POINT EXP FACT NEG OPERATOR LPAREN RPAREN RELATION
 %token IF
 %token WHILE
 %token ELSE

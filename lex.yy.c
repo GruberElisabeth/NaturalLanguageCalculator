@@ -2214,8 +2214,3 @@ void yyfree (void * ptr )
 
 #line 99 "calc-lex.l"
 
-
-int main() {
-    yylex();
-    return 0;
-}

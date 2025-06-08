@@ -14,6 +14,7 @@ Terminals unused in grammar
     DOUBLE
     BOOLEAN
     POINT
+    RELATION
     ID
     '='
 
@@ -73,23 +74,24 @@ Terminals, with rules where they appear
     OPERATOR <op> (270) 3
     LPAREN <op> (271) 7 8 9
     RPAREN <op> (272) 7 8 9
-    IF (273) 9
-    WHILE (274) 8
-    ELSE (275) 9
-    ID <lexeme> (276)
+    RELATION <op> (273)
+    IF (274) 9
+    WHILE (275) 8
+    ELSE (276) 9
+    ID <lexeme> (277)
 
 
 Nonterminals, with rules where they appear
 
-    $accept (24)
+    $accept (25)
         on left: 0
-    line <value> (25)
+    line <value> (26)
         on left: 1
         on right: 0
-    expr <value> (26)
+    expr <value> (27)
         on left: 2 3 4 5 6 7 8 9
         on right: 1 3 4 5 6 7 8 9
-    boolexpr <value> (27)
+    boolexpr <value> (28)
         on left: 10
         on right: 8 9
 

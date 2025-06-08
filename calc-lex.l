@@ -97,8 +97,3 @@ RELATION        greater|smaller|equal|equals
 "smaller"                           {yylval.value = '<'; return RELATION;}
 
 %%
-
-int main() {
-    yylex();
-    return 0;
-}
