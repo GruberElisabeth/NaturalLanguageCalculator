@@ -4,9 +4,19 @@
 #include <stdbool.h>
 #include "calc-parser.tab.h"
 
-// Debugging function to print token details
-void print_token(const char* token_name, int value) {
-    printf("TOKEN: %-10s (value: %d)\n", token_name, value);
+char* remove_plural(const char* str) {
+    if (strcmp(str, "feet") == 0) {
+        return strdup("foot");
+    }
+    if (strcmp(str, "inches") == 0) {
+        return strdup("inch");
+    }
+    size_t len = strlen(str);
+    char* copy = strdup(str);
+    if (len > 1 && copy[len - 1] == 's') {
+        copy[len - 1] = '\0';
+    }
+    return copy;
 }
 
 %}
@@ -28,16 +38,24 @@ NEGATION        {NEG}{INTEGER}
 OPERATOR        plus|minus|times|divide by
 LPAREN          open[ \t]*parenthesis
 RPAREN          close[ \t]*parenthesis
+RELATION        greater|smaller|equal|equals
+
 WHILE           while
 IF              if  
 ELSE            else
 BOOLEAN         (true|false)
-RELATION        greater|smaller|equal|equals
+
+WEIGHT          ((kilo|milli)?gram|pound|ton)s?
+TIME            (day|hour|minute|second|millisecond)s?
+SPACE           ((kilo|centi|milli)?meter|mile)s?|foot|feet|inch(es)?
+VOLUME          ((milli)?liter)s?
+
+
 
 %%
 
-[ \t]                 {/*skip blanks*/}
-"and"|"by"|"of"|"th"|"than"    {/*ignore*/}
+[ \t]                           {/*skip blanks*/}
+"and"|"by"|"of"|"th"|"than"     {/*ignore*/}
 
 "zero"              { yylval.value = 0; return UNIT; }
 "one"|"first"       { yylval.value = 1;  return UNIT; }
@@ -101,6 +119,12 @@ RELATION        greater|smaller|equal|equals
 "greater"                           {yylval.value = '>'; return RELATION;}
 "equal"|"equals"                    {yylval.value = '='; return RELATION;}
 "smaller"                           {yylval.value = '<'; return RELATION;}
+
+{SPACE}                             {yylval.measure = remove_trailing_s(yytext); RETURN SPACE;}
+{WEIGHT}                            {yylval.measure = remove_trailing_s(yytext); RETURN WEIGHT;}
+{TIME}                              {yylval.measure = remove_trailing_s(yytext); RETURN TIME;}               
+{VOLUME}                            {yylval.measure = remove_trailing_s(yytext); RETURN VOLUME;}
+
 
 \n      {return '\n';}
 
