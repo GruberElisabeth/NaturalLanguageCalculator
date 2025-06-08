@@ -2,8 +2,8 @@
 %{
 #include <stdlib.h>
 #include <stdbool.h>
-#include "y.tab.h"
-}
+#include "calc-parser.tab.h"
+%}
 
 UNIT            zero|one|two|three|four|five|six|seven|eight|nine|first|second|third|fifth|eighth|ninth
 TEEN            ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twelfth
@@ -68,10 +68,10 @@ BOOLEAN         (true|false)
 "million"       {yylval.value = 1000000; return HUNDRED;}
 "billion"       {yylval.value = 1000000000; return HUNDRED;}
 
-"plus"                              {yylval.op = '+'; return OPERATOR;}
-"minus"                             {yylval.op = '-'; return OPERATOR;}
-"times"                             {yylval.op = '*'; return OPERATOR;}
-"division"|"divide"                 {yylval.op = '/'; return OPERATOR;}
+"plus"                              {yylval.op = '+'; return PLUS;}
+"minus"                             {yylval.op = '-'; return MINUS;}
+"times"                             {yylval.op = '*'; return TIMES;}
+"division"|"divide"                 {yylval.op = '/'; return DIVIDE;}
 
 "open"[ ]*"parenthesis"             {yylval.op = '('; return LPAREN;}
 "close"[ ]*"parenthesis"            {yylval.op = ')'; return RPAREN;}

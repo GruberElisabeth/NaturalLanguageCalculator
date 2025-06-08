@@ -1,5 +1,7 @@
-#ifndef TABLE_H_
-#define TABLE_H_
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+
 
 typedef struct node {
     char name[256];
