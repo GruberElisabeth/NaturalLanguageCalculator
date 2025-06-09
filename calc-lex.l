@@ -52,7 +52,12 @@ VOLUME          ((milli)?liter)s?
 
 RATIO           (per)
 
+INT             integer
+DOU             double
 
+DIGIT           [0-9]
+LETTER          [a-zA-Z]*
+ID              {LETTER}({LETTER}|{DIGIT})*
 
 
 
@@ -120,17 +125,21 @@ RATIO           (per)
 "true"|"is true"                    {yylval.value = true; return BOOLEAN;}
 "false"|"is false"                  {yylval.value = false; return BOOLEAN;}
 
+"integer"                           {return INT;}
+"double"                            {return DOU;}
+
 "greater"                           {yylval.value = '>'; return RELATION;}
 "equal"|"equals"                    {yylval.value = '='; return RELATION;}
 "smaller"                           {yylval.value = '<'; return RELATION;}
 
-{SPACE}                             {yylval.measure = remove_trailing_s(yytext); RETURN SPACE;}
-{WEIGHT}                            {yylval.measure = remove_trailing_s(yytext); RETURN WEIGHT;}
-{TIME}                              {yylval.measure = remove_trailing_s(yytext); RETURN TIME;}               
-{VOLUME}                            {yylval.measure = remove_trailing_s(yytext); RETURN VOLUME;}
+{SPACE}                             {yylval.measure = remove_plural(yytext); return SPACE;}
+{WEIGHT}                            {yylval.measure = remove_plural(yytext); return WEIGHT;}
+{TIME}                              {yylval.measure = remove_plural(yytext); return TIME;}               
+{VOLUME}                            {yylval.measure = remove_plural(yytext); return VOLUME;}
 
-{RATIO}                             {return RATIO}
+{RATIO}                             {return RATIO;}
 
+{ID}                                {yylval.lexeme = strdup(yytext); return ID;}
 
 \n      {return '\n';}
 

@@ -4,129 +4,203 @@
 #include <stdlib.h>
 #include "table.h"
 
-Node* addToList(Node* list, char addChar[], char type[], char value[]){
-    if(list == NULL){
-        if(!findDouble(list, addChar)){
-            Node* node = (Node*)malloc(sizeof(Node));
-            //node->name = addChar;
-            //node->valInt = value;
+struct Node *addToList(struct Node *list, char *addChar, char *type, char *value)
+{
+    // if it is the first element in the table, a new node is made and the values are inserted
+    if (!findDouble(list, addChar))
+    {
+        if (list == NULL)
+        {
+            struct Node *node = (struct Node *)malloc(sizeof(struct Node));
+            strcpy(node->name, addChar);
+            insertVal(node, value, type);
             node->next = NULL;
             return node;
         }
-    }else{
-        Node* node = list;
-        if(node->name != NULL){
-            while(node->next == NULL){
-                node = node->next;
+        else
+        {
+            // otherwise the end of the existing list is searched
+            struct Node *node = list;
+            if (node->name != NULL)
+            {
+                while (node->next == NULL)
+                {
+                    node = node->next;
+                }
             }
-        }
 
-        Node* nextNode = (Node*)malloc(sizeof(Node));
-        //nextNode->name = addChar;
-        //nextNode->val = value;
-        node->next = nextNode;
-    
-        return list;
+            // at the end of the list, a new node is added with the provided values
+            struct Node *nextNode = (struct Node *)malloc(sizeof(struct Node));
+            strcpy(node->name, addChar);
+            insertVal(list, value, type);
+            node->next = nextNode;
+            return list;
+        }
     }
-    return list;
+    fprintf(stderr, "The element does already exist.\n");
+    exit(1);
 }
 
-int getInt(Node* list, char name[]){
-    char type [] = {'I','N','T'};
-    if(list != NULL){
-        if((strcmp(list->name, name) == 0) && (strcmp(list->type, type) == 0)){
+int getInt(struct Node *list, char *name)
+{
+    if (list != NULL)
+    {
+        if ((strcmp(list->name, name) == 0) && (strcmp(list->type, "int") == 0))
+        {
             return list->valInt;
         }
-        Node* node = list;
-        while(node->next != NULL){
+        struct Node *node = list;
+        while (node->next != NULL)
+        {
             node = node->next;
-            if((strcmp(node->name, name) == 0) && (strcmp(node->type, type) == 0)){
-                return node->valInt;
+
+            if ((strcmp(node->name, name) == 0))
+            {
+                if (strcmp(node->type, "int") == 0)
+                {
+                    return node->valInt;
+                }
+                fprintf(stderr, "The variable with name:  %s is not of type int", name);
+                exit(1);
             }
         }
     }
-    printf("We found no integer with the name %s", name);
-    return -10000;
+    fprintf(stderr, "There is no integer with the name %s", name);
+    exit(1);
 }
 
-double getDouble(Node* list, char name[]){
-    char type [] = {'D','O','U','B','L','E'};
-    if(list != NULL){
-        if((strcmp(list->name, name) == 0) && (strcmp(list->type, type) == 0)){
+double getDouble(struct Node *list, char *name)
+{
+    if (list != NULL)
+    {
+        if ((strcmp(list->name, name) == 0) && (strcmp(list->type, "double") == 0))
+        {
             return list->valDou;
         }
-        Node* node = list;
-        while(node->next != NULL){
+        struct Node *node = list;
+        while (node->next != NULL)
+        {
             node = node->next;
-            if((strcmp(node->name, name) == 0) && (strcmp(node->type, type) == 0)){
-                return node->valDou;
+            if ((strcmp(node->name, name) == 0))
+            {
+                if (strcmp(node->type, "double") == 0)
+                {
+                    return node->valDou;
+                }
+                fprintf(stderr, "The variable with name:  %s is not of type double", name);
+                exit(1);
             }
         }
     }
-    printf("We found no double with the name %s", name);
-    return -10000;
+    fprintf(stderr, "There is no double with the name %s", name);
+    exit(1);
 }
 
-bool getBoolean(Node* list, char name[]){
-    char type [] = {'B','O','O','L'};
-    if(list != NULL){
-        if((strcmp(list->name, name) == 0) && (strcmp(list->type, type) == 0)){
+bool getBoolean(struct Node *list, char *name)
+{
+    if (list != NULL)
+    {
+        if ((strcmp(list->name, name) == 0) && (strcmp(list->type, "bool") == 0))
+        {
             return list->valBool;
         }
-        Node* node = list;
-        while(node->next != NULL){
+        struct Node *node = list;
+        while (node->next != NULL)
+        {
             node = node->next;
-            if((strcmp(node->name, name) == 0) && (strcmp(node->type, type) == 0)){
-                return node->valBool;
+            if ((strcmp(node->name, name) == 0))
+            {
+                if (strcmp(node->type, "bool") == 0)
+                {
+                    return node->valBool;
+                }
+                fprintf(stderr, "The variable with name:  %s is not of type boolean", name);
+                exit(1);
             }
         }
     }
-    printf("We found no boolean with the name %s", name);
-    return false;
+    fprintf(stderr, "There is no boolean with the name %s", name);
+    exit(1);
 }
 
-Node* deleteItem(Node* list, char name[]){
-    if(list != NULL){
-        if((strcmp(list->name, name) == 0)){
+struct Node *deleteItem(struct Node *list, char *name)
+{
+    if (list != NULL)
+    {
+        if ((strcmp(list->name, name) == 0))
+        {
             return list->next;
         }
-        Node* node = list;
-        Node* before = NULL;
-        while(node->next != NULL){
+        struct Node *node = list;
+        struct Node *before = NULL;
+        while (node->next != NULL)
+        {
             before = node;
             node = node->next;
-            if((strcmp(node->name, name) == 0)){
+            if ((strcmp(node->name, name) == 0))
+            {
                 before->next = node->next;
                 return list;
             }
         }
     }
-    printf("There was no Value with the name %s", name);
+    fprintf(stderr, "There is no Value with the name %s", name);
+    exit(1);
+}
+
+struct Node *updateItem(struct Node *list, char *addChar, char *value)
+{
     return NULL;
 }
 
-bool findDouble(Node* list,char name[]){
-    if(list != NULL){
-        if((strcmp(list->name, name) == 0)){
+bool findDouble(struct Node *list, char *name)
+{
+    if (list != NULL)
+    {
+        if ((strcmp(list->name, name) == 0))
+        {
             return list->next;
         }
-        Node* node = list;
-        Node* before = NULL;
-        while(node->next != NULL){
+        struct Node *node = list;
+        struct Node *before = NULL;
+        while (node->next != NULL)
+        {
             before = node;
             node = node->next;
-            if((strcmp(node->name, name) == 0)){
-                return true;
+            if ((strcmp(node->name, name) == 0))
+            {
+                fprintf(stderr, "There is already a variable with this name: %s.", name);
+                exit(1);
             }
         }
     }
     return false;
 }
 
-
-
-
-
-
-
-
+void insertVal(struct Node *list, char *value, char *type)
+{
+    if (strcmp(type, "int") == 0)
+    {
+        list->valInt = atoi(value);
+    }
+    else if (strcmp(type, "bool") == 0)
+    {
+        if (strcmp(value, "true") == 0)
+        {
+            list->valBool = true;
+        }
+        else if (strcmp(value, "true") == 0)
+        {
+            list->valBool = false;
+        }
+    }
+    else if (strcmp(type, "double") == 0)
+    {
+        list->valDou = atof(value);
+    }
+    else
+    {
+        fprintf(stderr, "The type did not match any allowed type.");
+        exit(1);
+    }
+}

@@ -14,33 +14,43 @@ void yyerror(const char *s)
 }
 
 int yylex(void);
-struct node* table;
+struct Node* table;
 
-//#define YYDEBUG 1  // Enable debug mode
+#define YYDEBUG 1  // Enable debug mode
 
 %}
 
-//%debug
+%debug
 
 
 %union {
         double value;
         char op;
+        char* lexeme;
+        bool condition;
+        char* measure;
        }
 
 
-%token <value> UNIT TEEN TEN HUNDRED INTEGER DOUBLE NUM BOOLEAN
+%token <value> UNIT TEEN TEN HUNDRED INTEGER DOUBLE NUM
 %token <op> POINT EXP FACT NEG PLUS MINUS TIMES DIVIDE LPAREN RPAREN RELATION
+%token <measure> SPACE WEIGHT TIME VOLUME
+%token RATIO
 %token IF
 %token WHILE
 %token ELSE
-%token <value> ID
+%token <lexeme> ID
+%token <lexeme> BOOLEAN
+%token INT
+%token DOU
 
 %type <value> expr
 %type <value> line
-%type <value> boolexpr
-%type <value> assignment
-%type <value> insertation
+%type <condition> boolexpr
+%type <lexeme> assignment
+%type <lexeme> insertation
+
+
 
 %right '='
 %left PLUS MINUS
@@ -71,24 +81,48 @@ expr  : NUM                 {$$ = $1;}
                 $$ = factorial($1);
             }else{
                 yyerror("factorial can just be made for positive Integer");
+                exit(1);
             }
             }
       | MINUS expr %prec NEG  {$$ = - $2;}
       | expr EXP expr %prec EXP {$$ = pow($1, $3);}
       | LPAREN expr RPAREN {$$ = $2;}
+      | ID  {$$ = getDouble(table, $1);}
       | WHILE LPAREN boolexpr RPAREN expr %prec LOWEST {$$ = $5;}
       | IF LPAREN boolexpr RPAREN expr ELSE expr %prec LOWEST {$$ = $3?$5:$7;}
       ;
 
-assignment  : ID '=' expr    { $$ = $3; /* Add symbol table update here */ }
+assignment  : ID RELATION expr    {  char buffer[20];
+                                gcvt($3, 10, buffer);
+                                table = updateItem(table, $1, buffer);
+                                $$ = $1;}
+            | ID RELATION boolexpr { if($3){
+                                    table = updateItem(table, $1, "true");
+                                }else{
+                                    table = updateItem(table, $1, "false");
+                                }
+                                $$ = $1;
+                                }
             ;
 
-insertation : INTEGER ID '=' expr { $$ = $4; /* Add symbol table insert */ }
-            | DOUBLE ID '=' expr  { $$ = $4; /* Add symbol table insert */ }
-            | BOOLEAN ID '=' expr { $$ = $4; /* Add symbol table insert */ }
+insertation : INT ID RELATION expr { char buffer[20];
+                                    gcvt($4, 10, buffer);
+                                    table = addToList(table, $2, "int", buffer);
+                                    $$ = $2;}
+            | DOU ID RELATION expr  { char buffer[20];
+                                    gcvt($4, 10, buffer);
+                                    table = addToList(table, $2, "double", buffer);
+                                    $$ = $2;}
+            | BOOLEAN ID RELATION boolexpr { if($4){
+                                    table = addToList(table, $2, "bool", "true");
+                                    }else{
+                                    table = addToList(table, $2, "bool", "false");
+                                    }
+                                    $$ = $2;}
             ;
 
 boolexpr    : BOOLEAN {$$ = $1;}
+            | ID    {$$ = getBoolean(table, $1);}
             ;
 
 
@@ -100,6 +134,7 @@ boolexpr    : BOOLEAN {$$ = $1;}
 	
 int main(void)
 {
+    table = NULL;
     printf("Enter expressions (Ctrl+D to exit):\n");
     while (yyparse() == 0) {
     }
