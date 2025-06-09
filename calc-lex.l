@@ -49,7 +49,7 @@ WEIGHT          ((kilo|milli)?gram|pound|ton)s?
 TIME            (day|hour|minute|second|millisecond)s?
 SPACE           ((kilo|centi|milli)?meter|mile)s?|foot|feet|inch(es)?
 VOLUME          ((milli)?liter)s?
-MEASURE         ({SPACE})|({WEIGHT})|({TIME})|({VOLUME})
+
 RATIO           (per)
 
 
@@ -129,7 +129,6 @@ RATIO           (per)
 {TIME}                              {yylval.measure = remove_trailing_s(yytext); RETURN TIME;}               
 {VOLUME}                            {yylval.measure = remove_trailing_s(yytext); RETURN VOLUME;}
 
-{MEASURE}                           {yylval.measure = remove_trailing_s(yytext); RETURN VOLUME;}
 {RATIO}                             {return RATIO}
 
 
