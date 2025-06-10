@@ -100,6 +100,8 @@ ID              {LETTER}({LETTER}|{DIGIT})*
 "million"       {yylval.value = 1000000; return HUNDRED;}
 "billion"       {yylval.value = 1000000000; return HUNDRED;}
 
+
+
 "plus"              { yylval.op = '+'; return PLUS; }
 "minus"             { yylval.op = '-';  return MINUS; }
 "times"             { yylval.op = '*'; return TIMES; }
@@ -130,10 +132,10 @@ ID              {LETTER}({LETTER}|{DIGIT})*
 "smaller equal"|"smaller equals"        {yylval.lexeme = strdup("<="); return RELATION;}
 "different"|"not equal"|"not equals"    {yylval.lexeme = strdup("!="); return RELATION;}
 "greater"                               {yylval.lexeme = strdup(">"); return RELATION;}
-"equal"                                {yylval.lexeme = strdup("="); return RELATION;}
+"equal"|"equals"                        {yylval.lexeme = strdup("="); return RELATION;}
 "smaller"                               {yylval.lexeme = strdup("<"); return RELATION;}
 
-"equals"                                 {return ASSIGN;}
+"is"                                 {return ASSIGN;}
 
 {SPACE}                             {yylval.measure = remove_plural(yytext); return SPACE;}
 {WEIGHT}                            {yylval.measure = remove_plural(yytext); return WEIGHT;}
