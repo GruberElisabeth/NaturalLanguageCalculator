@@ -126,9 +126,12 @@ ID              {LETTER}({LETTER}|{DIGIT})*
 "integer"                           {return INT;}
 "double"                            {return DOU;}
 
-"greater"                           {yylval.op = '>'; return RELATION;}
-"equal"|"equals"                    {yylval.op = '='; return RELATION;}
-"smaller"                           {yylval.op = '<'; return RELATION;}
+"greater equal"|"greater equals"        {yylval.lexeme = strdup(">="); return RELATION;}
+"smaller equal"|"smaller equals"        {yylval.lexeme = strdup("<="); return RELATION;}
+"different"|"not equal"|"not equals"    {yylval.lexeme = strdup("!="); return RELATION;}
+"greater"                               {yylval.lexeme = strdup(">"); return RELATION;}
+"equal"|"equals"                        {yylval.lexeme = strdup("="); return RELATION;}
+"smaller"                               {yylval.lexeme = strdup("<"); return RELATION;}
 
 {SPACE}                             {yylval.measure = remove_plural(yytext); return SPACE;}
 {WEIGHT}                            {yylval.measure = remove_plural(yytext); return WEIGHT;}

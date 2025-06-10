@@ -33,14 +33,13 @@ struct Node* table;
 
 
 %token <value> UNIT TEEN TEN HUNDRED INTEGER DOUBLE NUM
-%token <op> POINT EXP FACT NEG PLUS MINUS TIMES DIVIDE LPAREN RPAREN RELATION
+%token <op> POINT EXP FACT NEG PLUS MINUS TIMES DIVIDE LPAREN RPAREN
 %token <measure> SPACE WEIGHT TIME VOLUME
 %token RATIO
 %token IF
 %token WHILE
 %token ELSE
-%token <lexeme> ID
-%token <lexeme> BOOLEAN
+%token <lexeme> ID BOOLEAN RELATION
 %token INT
 %token DOU
 
@@ -134,17 +133,18 @@ insertation : INT ID RELATION expr { char buffer[20];
 boolexpr    : BOOLEAN {$$ = $1;}
             | ID    {$$ = getBoolean(table, $1);}
             | expr RELATION expr {
-                switch($2) {
-                    case '<': $$ = $1 < $3; break;
-                    case '=': $$ = $1 == $3; break;
-                    case '>': $$ = $1 > $3; break;
-                    default:
-                        yyerror("Unknown relational operator");
-                        $$ = 0;
+                if (strcmp($2, "<") == 0) $$ = $1 < $3;
+                else if (strcmp($2, "<=") == 0) $$ = $1 <= $3;
+                else if (strcmp($2, ">") == 0) $$ = $1 > $3;
+                else if (strcmp($2, ">=") == 0) $$ = $1 >= $3;
+                else if (strcmp($2, "=") == 0) $$ = $1 = $3;
+                else if (strcmp($2, "!=") == 0) $$ = $1 != $3;
+                else {
+                    yyerror("Unknown relational operator");
+                    $$ = 0;
                 }
             }
             ;
-
 
 %%
 
