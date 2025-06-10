@@ -42,6 +42,7 @@ struct Node* table;
 %token <lexeme> ID BOOLEAN RELATION
 %token INT
 %token DOU
+%token ASSIGN
 
 %type <value> expr
 %type <value> number
@@ -60,6 +61,7 @@ struct Node* table;
 %start line 
 
 %%
+
 line  : expr '\n'      {$$ = $1; printf("Result: %f\n", $$); exit(0);}
       | boolexpr '\n' {
             if ($1)
@@ -101,11 +103,11 @@ expr  : number              {$$ = $1;}
       | IF LPAREN boolexpr RPAREN expr ELSE expr %prec LOWEST   {$$ = $3?$5:$7;}
       ;
 
-assignment  : ID RELATION expr    {  char buffer[20];
+assignment  : ID ASSIGN expr    {  char buffer[20];
                                 gcvt($3, 10, buffer);
                                 table = updateItem(table, $1, buffer);
                                 $$ = $1;}
-            | ID RELATION boolexpr { if($3){
+            | ID ASSIGN boolexpr { if($3){
                                     table = updateItem(table, $1, "true");
                                 }else{
                                     table = updateItem(table, $1, "false");
@@ -114,15 +116,15 @@ assignment  : ID RELATION expr    {  char buffer[20];
                                 }
             ;
 
-insertation : INT ID RELATION expr { char buffer[20];
+insertation : INT ID ASSIGN expr { char buffer[20];
                                     gcvt($4, 10, buffer);
                                     table = addToList(table, $2, "int", buffer);
                                     $$ = $2;}
-            | DOU ID RELATION expr  { char buffer[20];
+            | DOU ID ASSIGN expr  { char buffer[20];
                                     gcvt($4, 10, buffer);
                                     table = addToList(table, $2, "double", buffer);
                                     $$ = $2;}
-            | BOOLEAN ID RELATION boolexpr { if($4){
+            | BOOLEAN ID ASSIGN boolexpr { if($4){
                                     table = addToList(table, $2, "bool", "true");
                                     }else{
                                     table = addToList(table, $2, "bool", "false");

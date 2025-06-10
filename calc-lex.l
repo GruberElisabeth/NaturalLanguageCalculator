@@ -57,7 +57,7 @@ DOU             double
 
 DIGIT           [0-9]
 LETTER          [a-zA-Z]*
-ID              !(UNIT|TEEN|TEN|HUNDRED)th{LETTER}({LETTER}|{DIGIT})*
+ID              {LETTER}({LETTER}|{DIGIT})*
 
 %%
 
@@ -130,8 +130,10 @@ ID              !(UNIT|TEEN|TEN|HUNDRED)th{LETTER}({LETTER}|{DIGIT})*
 "smaller equal"|"smaller equals"        {yylval.lexeme = strdup("<="); return RELATION;}
 "different"|"not equal"|"not equals"    {yylval.lexeme = strdup("!="); return RELATION;}
 "greater"                               {yylval.lexeme = strdup(">"); return RELATION;}
-"equal"|"equals"                        {yylval.lexeme = strdup("="); return RELATION;}
+"equal"                                {yylval.lexeme = strdup("="); return RELATION;}
 "smaller"                               {yylval.lexeme = strdup("<"); return RELATION;}
+
+"equals"                                 {return ASSIGN;}
 
 {SPACE}                             {yylval.measure = remove_plural(yytext); return SPACE;}
 {WEIGHT}                            {yylval.measure = remove_plural(yytext); return WEIGHT;}
