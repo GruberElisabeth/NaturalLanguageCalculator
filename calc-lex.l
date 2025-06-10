@@ -59,16 +59,14 @@ DIGIT           [0-9]
 LETTER          [a-zA-Z]*
 ID              {LETTER}({LETTER}|{DIGIT})*
 
-
-
 %%
 
 [ \t]                           {/*skip blanks*/}
 "and"|"by"|"of"|"th"|"than"     {/*ignore*/}
 
-"zero"              { yylval.value = 0; return UNIT; }
-"one"|"first"       { yylval.value = 1;  return UNIT; }
-"two"|"second"      { yylval.value = 2; return UNIT; }
+"zero"              {yylval.value = 0; return UNIT;}
+"one"|"first"       {yylval.value = 1;  return UNIT;}
+"two"|"second"      {yylval.value = 2; return UNIT;}
 "three"|"third"     {yylval.value = 3; return UNIT;}
 "four"              {yylval.value = 4; return UNIT;}
 "five"|"fifth"      {yylval.value = 5; return UNIT;}

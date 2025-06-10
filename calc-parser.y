@@ -24,6 +24,7 @@ struct Node* table;
 
 
 %union {
+        int intvalue;
         double value;
         char op;
         char* lexeme;
@@ -45,12 +46,11 @@ struct Node* table;
 %token DOU
 
 %type <value> expr
+%type <value> number
 %type <value> line
 %type <condition> boolexpr
 %type <lexeme> assignment
 %type <lexeme> insertation
-
-
 
 %right '='
 %left PLUS MINUS
@@ -67,15 +67,19 @@ line  : expr '\n'      {$$ = $1; printf("Result: %f\n", $$); exit(0);}
       | insertation '\n' { printf("Insertation complete\n"); exit(0);}
       ;
 
+number  : UNIT                  {$$ = $1;}
+        | TEEN                  {$$ = $1;}
+        | TEN                   {$$ = $1;}
+        | TEN UNIT              {$$ = $1 + $2;}
+        | UNIT HUNDRED          {$$ = $1 * $2;}
+        | UNIT HUNDRED number   {$$ = $1 * $2 + $3;}
+        ;
 
-expr  : NUM                 {$$ = $1;}
-      | UNIT                {$$ = $1;}
-      | TEEN                {$$ = $1;}
-      | TEN                 {$$ = $1;}
-      | expr PLUS expr      { $$ = $1 + $3;}
-      | expr MINUS expr      { $$ = $1 - $3; }
-      | expr TIMES expr      { $$ = $1 * $3; }
-      | expr DIVIDE expr     { $$ = $1 / $3; }
+expr  : number              {$$ = $1;}
+      | expr PLUS expr      {$$ = $1 + $3;}
+      | expr MINUS expr     {$$ = $1 - $3;}
+      | expr TIMES expr     {$$ = $1 * $3;}
+      | expr DIVIDE expr    {$$ = $1 / $3;}
       | expr FACT {
             if((int)$1 == $1 && $1 >= 0){
                 $$ = factorial($1);
