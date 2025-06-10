@@ -126,9 +126,9 @@ ID              {LETTER}({LETTER}|{DIGIT})*
 "integer"                           {return INT;}
 "double"                            {return DOU;}
 
-"greater"                           {yylval.value = '>'; return RELATION;}
-"equal"|"equals"                    {yylval.value = '='; return RELATION;}
-"smaller"                           {yylval.value = '<'; return RELATION;}
+"greater"                           {yylval.op = '>'; return RELATION;}
+"equal"|"equals"                    {yylval.op = '='; return RELATION;}
+"smaller"                           {yylval.op = '<'; return RELATION;}
 
 {SPACE}                             {yylval.measure = remove_plural(yytext); return SPACE;}
 {WEIGHT}                            {yylval.measure = remove_plural(yytext); return WEIGHT;}

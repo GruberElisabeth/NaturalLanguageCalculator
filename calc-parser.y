@@ -24,7 +24,6 @@ struct Node* table;
 
 
 %union {
-        int intvalue;
         double value;
         char op;
         char* lexeme;
@@ -63,6 +62,13 @@ struct Node* table;
 
 %%
 line  : expr '\n'      {$$ = $1; printf("Result: %f\n", $$); exit(0);}
+      | boolexpr '\n' {
+            if ($1)
+                printf("Result: true\n");
+            else
+                printf("Result: false\n");
+            exit(0);
+        }
       | assignment '\n'  { printf("Assignment complete\n"); exit(0);}
       | insertation '\n' { printf("Insertation complete\n"); exit(0);}
       ;
@@ -88,12 +94,12 @@ expr  : number              {$$ = $1;}
                 exit(1);
             }
             }
-      | MINUS expr %prec NEG  {$$ = - $2;}
-      | expr EXP expr %prec EXP {$$ = pow($1, $3);}
-      | LPAREN expr RPAREN {$$ = $2;}
-      | ID  {$$ = getDouble(table, $1);}
-      | WHILE LPAREN boolexpr RPAREN expr %prec LOWEST {$$ = $5;}
-      | IF LPAREN boolexpr RPAREN expr ELSE expr %prec LOWEST {$$ = $3?$5:$7;}
+      | MINUS expr %prec NEG            {$$ = - $2;}
+      | expr EXP expr %prec EXP         {$$ = pow($1, $3);}
+      | LPAREN expr RPAREN              {$$ = $2;}
+      | ID                              {$$ = getDouble(table, $1);}
+      | WHILE LPAREN boolexpr RPAREN expr %prec LOWEST          {$$ = $5;}
+      | IF LPAREN boolexpr RPAREN expr ELSE expr %prec LOWEST   {$$ = $3?$5:$7;}
       ;
 
 assignment  : ID RELATION expr    {  char buffer[20];
@@ -127,8 +133,17 @@ insertation : INT ID RELATION expr { char buffer[20];
 
 boolexpr    : BOOLEAN {$$ = $1;}
             | ID    {$$ = getBoolean(table, $1);}
+            | expr RELATION expr {
+                switch($2) {
+                    case '<': $$ = $1 < $3; break;
+                    case '=': $$ = $1 == $3; break;
+                    case '>': $$ = $1 > $3; break;
+                    default:
+                        yyerror("Unknown relational operator");
+                        $$ = 0;
+                }
+            }
             ;
-
 
 
 %%
