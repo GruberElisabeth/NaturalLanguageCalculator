@@ -61,20 +61,19 @@ ID              {LETTER}({LETTER}|{DIGIT})*
 BOOL            (true|false)
 
 
-
 %%
 
-[ \t]                           {/*skip blanks*/}
-"and"|"by"|"of"|"th"|"than"     {/*ignore*/}
+[ \t]                          {/*skip blanks*/}
+"and"|"by"|"of"|"than"|"from"|"th"  {/*ignore*/}
 
-"zero"              { yylval.value = 0; return UNIT; }
-"one"|"first"       { yylval.value = 1;  return UNIT; }
-"two"|"second"      { yylval.value = 2; return UNIT; }
+"zero"              {yylval.value = 0; return UNIT;}
+"one"|"first"       {yylval.value = 1; return UNIT;}
+"two"|"second"      {yylval.value = 2; return UNIT;}
 "three"|"third"     {yylval.value = 3; return UNIT;}
 "four"              {yylval.value = 4; return UNIT;}
 "five"|"fifth"      {yylval.value = 5; return UNIT;}
 "six"               {yylval.value = 6; return UNIT;}
-"seven"             {printf("seven");yylval.value = 7; return UNIT;}
+"seven"             {yylval.value = 7; return UNIT;}
 "eight"|"eighth"    {yylval.value = 8; return UNIT;}
 "nine"|"ninth"      {yylval.value = 9; return UNIT;}
 
@@ -102,6 +101,8 @@ BOOL            (true|false)
 "thousand"      {yylval.value = 1000; return HUNDRED;}
 "million"       {yylval.value = 1000000; return HUNDRED;}
 "billion"       {yylval.value = 1000000000; return HUNDRED;}
+
+
 
 "plus"              { yylval.op = '+'; return PLUS; }
 "minus"             { yylval.op = '-';  return MINUS; }
@@ -131,9 +132,14 @@ BOOL            (true|false)
 "boolean"                           {return BOOLEAN;}
 {BOOL}                              {yylval.lexeme = strdup(yytext); return BOOL;}
 
-"greater"                           {yylval.value = '>'; return RELATION;}
-"equal"|"equals"                    {printf("Token equals"); yylval.value = '='; return RELATION;}
-"smaller"                           {yylval.value = '<'; return RELATION;}
+"greater equal"|"greater equals"        {yylval.lexeme = strdup(">="); return RELATION;}
+"smaller equal"|"smaller equals"        {yylval.lexeme = strdup("<="); return RELATION;}
+"different"|"not equal"|"not equals"    {yylval.lexeme = strdup("!="); return RELATION;}
+"greater"                               {yylval.lexeme = strdup(">"); return RELATION;}
+"equal"|"equals"                        {yylval.lexeme = strdup("="); return RELATION;}
+"smaller"                               {yylval.lexeme = strdup("<"); return RELATION;}
+
+"is"                                 {return ASSIGN;}
 
 {SPACE}                             {yylval.measure = remove_plural(yytext); return SPACE;}
 {WEIGHT}                            {yylval.measure = remove_plural(yytext); return WEIGHT;}
@@ -142,7 +148,7 @@ BOOL            (true|false)
 
 {RATIO}                             {return RATIO;}
 
-{ID}                                {printf("Token %s",yytext);yylval.lexeme = strdup(yytext); return ID;}
+{ID}                                {yylval.lexeme = strdup(yytext); return ID;}
 
 \n      {return '\n';}
 

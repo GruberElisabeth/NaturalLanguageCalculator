@@ -33,24 +33,24 @@ struct Node* table;
 
 
 %token <value> UNIT TEEN TEN HUNDRED INTEGER DOUBLE NUM
-%token <op> POINT EXP FACT NEG PLUS MINUS TIMES DIVIDE LPAREN RPAREN RELATION
+%token <op> POINT EXP FACT NEG PLUS MINUS TIMES DIVIDE LPAREN RPAREN
 %token <measure> SPACE WEIGHT TIME VOLUME
 %token RATIO
 %token IF
 %token WHILE
 %token ELSE
 %token <lexeme> ID
-%token <lexeme> BOOL
+%token <lexeme> BOOLEAN
 %token INT
 %token DOU
-%token BOOLEAN
-
 
 %type <value> expr
+%type <value> number
 %type <value> line
 %type <condition> boolexpr
 %type <lexeme> assignment
 %type <lexeme> insertation
+
 
 
 %right '='
@@ -63,24 +63,24 @@ struct Node* table;
 %start line 
 
 %%
-line  : assignment '\n'  { printList(table); printf("Assignment complete\n"); }
-      | line assignment '\n' {printf("complete 2");}
-      | insertation '\n' { printList(table); printf("Insertation complete\n"); }
-      | line insertation '\n' {printf("complete 2");}
-      | expr '\n'      {$$ = $1; printf("Result: %f\n", $$); }
-      | line expr '\n'  {$$ = $2; printf("Result: %f\n", $$); }
-      
+line  : expr '\n'      {$$ = $1; printf("Result: %f\n", $$); exit(0);}
+      | assignment '\n'  { printf("Assignment complete\n"); exit(0);}
+      | insertation '\n' { printf("Insertation complete\n"); exit(0);}
       ;
 
+number  : UNIT                  {$$ = $1;}
+        | TEEN                  {$$ = $1;}
+        | TEN                   {$$ = $1;}
+        | TEN UNIT              {$$ = $1 + $2;}
+        | UNIT HUNDRED          {$$ = $1 * $2;}
+        | UNIT HUNDRED number   {$$ = $1 * $2 + $3;}
+        ;
 
-expr  : NUM                 {$$ = $1;}
-      | UNIT                {$$ = $1;}
-      | TEEN                {$$ = $1;}
-      | TEN                 {$$ = $1;}
-      | expr PLUS expr      { $$ = $1 + $3;}
-      | expr MINUS expr      { $$ = $1 - $3; }
-      | expr TIMES expr      { $$ = $1 * $3; }
-      | expr DIVIDE expr     { $$ = $1 / $3; }
+expr  : number              {$$ = $1;}
+      | expr PLUS expr      {$$ = $1 + $3;}
+      | expr MINUS expr     {$$ = $1 - $3;}
+      | expr TIMES expr     {$$ = $1 * $3;}
+      | expr DIVIDE expr    {$$ = $1 / $3;}
       | expr FACT {
             if((int)$1 == $1 && $1 >= 0){
                 $$ = factorial($1);
@@ -89,44 +89,46 @@ expr  : NUM                 {$$ = $1;}
                 exit(1);
             }
             }
-      | MINUS expr %prec NEG  {$$ = - $2;}
-      | expr EXP expr %prec EXP {$$ = pow($1, $3);}
-      | LPAREN expr RPAREN {$$ = $2;}
-      | ID  {$$ = getDouble(table, $1);}
-      | WHILE LPAREN boolexpr RPAREN expr %prec LOWEST {$$ = $5;}
-      | IF LPAREN boolexpr RPAREN expr ELSE expr %prec LOWEST {$$ = $3?$5:$7;}
+      | MINUS expr %prec NEG            {$$ = - $2;}
+      | expr EXP expr %prec EXP         {$$ = pow($1, $3);}
+      | LPAREN expr RPAREN              {$$ = $2;}
+      | ID                              {$$ = getDouble(table, $1);}
+      | WHILE LPAREN boolexpr RPAREN expr %prec LOWEST          {$$ = $5;}
+      | IF LPAREN boolexpr RPAREN expr ELSE expr %prec LOWEST   {$$ = $3?$5:$7;}
       ;
 
 assignment  : ID RELATION expr    {  char buffer[20];
-                                    gcvt($3, 10, buffer);
-                                    table = updateItem(table, $1, buffer);
-                                    $$ = $1;
-                                }
+                                gcvt($3, 10, buffer);
+                                table = updateItem(table, $1, buffer);
+                                $$ = $1;}
             | ID RELATION boolexpr { if($3){
-                                        table = updateItem(table, $1, "true");
-                                    }else{
-                                        table = updateItem(table, $1, "false");
-                                    }
-                                    $$ = $1;
+                                    table = updateItem(table, $1, "true");
+                                }else{
+                                    table = updateItem(table, $1, "false");
+                                }
+                                $$ = $1;
                                 }
             ;
 
-
-insertation : INT ID                { 
-                                    table = addToList(table, $2, "int", "0");
-                                    printf("Variable %s\n", $2);
+insertation : INT ID RELATION expr { char buffer[20];
+                                    gcvt($4, 10, buffer);
+                                    table = addToList(table, $2, "int", buffer);
                                     $$ = $2;}
-            | DOU ID                { table = addToList(table, $2, "double","0.0");
-                                    printf("Variable %s\n", $2);
+            | DOU ID RELATION expr  { char buffer[20];
+                                    gcvt($4, 10, buffer);
+                                    table = addToList(table, $2, "double", buffer);
                                     $$ = $2;}
-            | BOOLEAN ID            { table = addToList(table, $2, "bool", "true");
-                                    printf("Variable %s\n", $2);
+            | BOOLEAN ID RELATION boolexpr { if($4){
+                                    table = addToList(table, $2, "bool", "true");
+                                    }else{
+                                    table = addToList(table, $2, "bool", "false");
+                                    }
                                     $$ = $2;}
 
 
 
-boolexpr    : BOOL          {$$ = $1;}
-            | ID         { $$ = getBoolean(table, $1);}
+boolexpr    : BOOLEAN {$$ = $1;}
+            | ID    {$$ = getBoolean(table, $1);}
             ;
 
 

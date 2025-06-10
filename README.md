@@ -33,7 +33,7 @@ An excutable called **parser** will be generated
 Run the parser 
 
 ```bash
-./parser
+./natLangCalc
 ```
 
 Type input
