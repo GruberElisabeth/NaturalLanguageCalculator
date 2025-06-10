@@ -17,11 +17,7 @@ char* remove_plural(const char* str) {
         copy[len - 1] = '\0';
     }
     return copy;
-}
-
-
-
-%}
+}%
 
 UNIT            zero|one|two|three|four|five|six|seven|eight|nine|first|second|third|fifth|eighth|ninth
 TEEN            ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twelfth
@@ -63,7 +59,7 @@ ID              !(UNIT|TEEN|TEN|HUNDRED)th{LETTER}({LETTER}|{DIGIT})*
 
 %%
 
-[ \t]                               {/*skip blanks*/}
+[ \t]                          {/*skip blanks*/}
 "and"|"by"|"of"|"than"|"from"  {/*ignore*/}
 
 "zero"              {yylval.value = 0; return UNIT;}
