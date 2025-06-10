@@ -6,40 +6,34 @@
 
 struct Node *addToList(struct Node *list, char *addChar, char *type, char *value)
 {
-    // if it is the first element in the table, a new node is made and the values are inserted
     if (!findDouble(list, addChar))
     {
+        struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+        strcpy(newNode->name, addChar);
+        strcpy(newNode->type, type);
+        insertVal(newNode, value, type);
+        newNode->next = NULL;
+
         if (list == NULL)
         {
-            struct Node *node = (struct Node *)malloc(sizeof(struct Node));
-            strcpy(node->name, addChar);
-            insertVal(node, value, type);
-            node->next = NULL;
-            return node;
+            return newNode;
         }
         else
         {
-            // otherwise the end of the existing list is searched
             struct Node *node = list;
-            if (node->name != NULL)
+            while (node->next != NULL)
             {
-                while (node->next == NULL)
-                {
-                    node = node->next;
-                }
+                node = node->next;
             }
-
-            // at the end of the list, a new node is added with the provided values
-            struct Node *nextNode = (struct Node *)malloc(sizeof(struct Node));
-            strcpy(node->name, addChar);
-            insertVal(list, value, type);
-            node->next = nextNode;
+            node->next = newNode;
             return list;
         }
     }
-    fprintf(stderr, "The element does already exist.\n");
+
+    fprintf(stderr, "The element already exists.\n");
     exit(1);
 }
+
 
 int getInt(struct Node *list, char *name)
 {
@@ -77,6 +71,10 @@ double getDouble(struct Node *list, char *name)
         {
             return list->valDou;
         }
+        if ((strcmp(list->name, name) == 0) && (strcmp(list->type, "int") == 0))
+        {
+            return list->valInt;
+        }
         struct Node *node = list;
         while (node->next != NULL)
         {
@@ -87,7 +85,13 @@ double getDouble(struct Node *list, char *name)
                 {
                     return node->valDou;
                 }
-                fprintf(stderr, "The variable with name:  %s is not of type double", name);
+                
+                if (strcmp(node->type, "int") == 0)
+                {
+                    return node->valInt;
+                }
+
+                fprintf(stderr, "The variable with name:  %s is not a number", name);
                 exit(1);
             }
         }
@@ -148,9 +152,57 @@ struct Node *deleteItem(struct Node *list, char *name)
     exit(1);
 }
 
-struct Node *updateItem(struct Node *list, char *addChar, char *value)
+struct Node *updateItem(struct Node *list, char *name, char *value)
 {
+    if (list != NULL)
+    {
+        if ((strcmp(list->name, name) == 0))
+        {
+            insertVal(list, value, list->type);
+            return list;
+        }
+        struct Node *node = list;
+        while (node->next != NULL)
+        {
+            node = node->next;
+            if ((strcmp(node->name, name) == 0))
+            {
+                insertVal(list, value, list->type);
+                return list;
+            }
+        }
+    }
     return NULL;
+}
+
+void printList (struct Node *list){
+    printf("Here you can see all the symbols in your table.");
+     if (list != NULL)
+    {
+        if((strcmp(list->type, "int") == 0)){
+            printf("Identifier: %s \tValue: %d \n", list->name, list->valInt);
+        }else if((strcmp(list->type, "double") == 0)){
+            printf("Identifier: %s \tValue: %lf \n", list->name, list->valDou);
+        }else{
+            printf("Identifier: %s \tValue: %d \n", list->name, list->valBool);
+        }
+        
+        struct Node *node = list;
+        while (node != NULL)
+        {
+            
+            if((strcmp(node->type, "int") == 0)){
+                printf("Identifier: %s \tValue: %d \n", node->name, node->valInt);
+            }else if((strcmp(node->type, "double") == 0)){
+                printf("Identifier: %s \tValue: %lf \n", node->name, node->valDou);
+            }else{
+                printf("Identifier: %s \tValue: %d \n", node->name, node->valBool);
+            }
+
+            node = node->next;
+        }
+    }
+
 }
 
 bool findDouble(struct Node *list, char *name)
@@ -159,13 +211,12 @@ bool findDouble(struct Node *list, char *name)
     {
         if ((strcmp(list->name, name) == 0))
         {
-            return list->next;
+            fprintf(stderr, "There is already a variable with this name: %s.", name);
+            exit(1);
         }
         struct Node *node = list;
-        struct Node *before = NULL;
         while (node->next != NULL)
         {
-            before = node;
             node = node->next;
             if ((strcmp(node->name, name) == 0))
             {
@@ -189,7 +240,7 @@ void insertVal(struct Node *list, char *value, char *type)
         {
             list->valBool = true;
         }
-        else if (strcmp(value, "true") == 0)
+        else if (strcmp(value, "false") == 0)
         {
             list->valBool = false;
         }

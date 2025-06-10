@@ -43,7 +43,6 @@ RELATION        greater|smaller|equal|equals
 WHILE           while
 IF              if  
 ELSE            else
-BOOLEAN         (true|false)
 
 WEIGHT          ((kilo|milli)?gram|pound|ton)s?
 TIME            (day|hour|minute|second|millisecond)s?
@@ -59,6 +58,8 @@ DIGIT           [0-9]
 LETTER          [a-zA-Z]*
 ID              {LETTER}({LETTER}|{DIGIT})*
 
+BOOL            (true|false)
+
 
 
 %%
@@ -73,7 +74,7 @@ ID              {LETTER}({LETTER}|{DIGIT})*
 "four"              {yylval.value = 4; return UNIT;}
 "five"|"fifth"      {yylval.value = 5; return UNIT;}
 "six"               {yylval.value = 6; return UNIT;}
-"seven"             {yylval.value = 7; return UNIT;}
+"seven"             {printf("seven");yylval.value = 7; return UNIT;}
 "eight"|"eighth"    {yylval.value = 8; return UNIT;}
 "nine"|"ninth"      {yylval.value = 9; return UNIT;}
 
@@ -127,9 +128,11 @@ ID              {LETTER}({LETTER}|{DIGIT})*
 
 "integer"                           {return INT;}
 "double"                            {return DOU;}
+"boolean"                           {return BOOLEAN;}
+{BOOL}                              {yylval.lexeme = strdup(yytext); return BOOL;}
 
 "greater"                           {yylval.value = '>'; return RELATION;}
-"equal"|"equals"                    {yylval.value = '='; return RELATION;}
+"equal"|"equals"                    {printf("Token equals"); yylval.value = '='; return RELATION;}
 "smaller"                           {yylval.value = '<'; return RELATION;}
 
 {SPACE}                             {yylval.measure = remove_plural(yytext); return SPACE;}
@@ -139,7 +142,7 @@ ID              {LETTER}({LETTER}|{DIGIT})*
 
 {RATIO}                             {return RATIO;}
 
-{ID}                                {yylval.lexeme = strdup(yytext); return ID;}
+{ID}                                {printf("Token %s",yytext);yylval.lexeme = strdup(yytext); return ID;}
 
 \n      {return '\n';}
 

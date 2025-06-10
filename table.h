@@ -22,8 +22,10 @@ struct Node *deleteItem(struct Node *list, char *name);
 int getInt(struct Node *list, char *name);
 double getDouble(struct Node *list, char *name);
 bool getBoolean(struct Node *list, char *name);
+struct Node *updateItem(struct Node *list, char *name, char *value);
+void printList (struct Node *list);
 
 bool findDouble(struct Node *list, char *name);
 void insertVal(struct Node *list, char *value, char *type);
 
-struct Node *updateItem(struct Node *list, char *addChar, char *value);
+

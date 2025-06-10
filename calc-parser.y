@@ -40,16 +40,17 @@ struct Node* table;
 %token WHILE
 %token ELSE
 %token <lexeme> ID
-%token <lexeme> BOOLEAN
+%token <lexeme> BOOL
 %token INT
 %token DOU
+%token BOOLEAN
+
 
 %type <value> expr
 %type <value> line
 %type <condition> boolexpr
 %type <lexeme> assignment
 %type <lexeme> insertation
-
 
 
 %right '='
@@ -62,9 +63,13 @@ struct Node* table;
 %start line 
 
 %%
-line  : expr '\n'      {$$ = $1; printf("Result: %f\n", $$); exit(0);}
-      | assignment '\n'  { printf("Assignment complete\n"); exit(0);}
-      | insertation '\n' { printf("Insertation complete\n"); exit(0);}
+line  : assignment '\n'  { printList(table); printf("Assignment complete\n"); }
+      | line assignment '\n' {printf("complete 2");}
+      | insertation '\n' { printList(table); printf("Insertation complete\n"); }
+      | line insertation '\n' {printf("complete 2");}
+      | expr '\n'      {$$ = $1; printf("Result: %f\n", $$); }
+      | line expr '\n'  {$$ = $2; printf("Result: %f\n", $$); }
+      
       ;
 
 
@@ -93,36 +98,35 @@ expr  : NUM                 {$$ = $1;}
       ;
 
 assignment  : ID RELATION expr    {  char buffer[20];
-                                gcvt($3, 10, buffer);
-                                table = updateItem(table, $1, buffer);
-                                $$ = $1;}
+                                    gcvt($3, 10, buffer);
+                                    table = updateItem(table, $1, buffer);
+                                    $$ = $1;
+                                }
             | ID RELATION boolexpr { if($3){
-                                    table = updateItem(table, $1, "true");
-                                }else{
-                                    table = updateItem(table, $1, "false");
-                                }
-                                $$ = $1;
-                                }
-            ;
-
-insertation : INT ID RELATION expr { char buffer[20];
-                                    gcvt($4, 10, buffer);
-                                    table = addToList(table, $2, "int", buffer);
-                                    $$ = $2;}
-            | DOU ID RELATION expr  { char buffer[20];
-                                    gcvt($4, 10, buffer);
-                                    table = addToList(table, $2, "double", buffer);
-                                    $$ = $2;}
-            | BOOLEAN ID RELATION boolexpr { if($4){
-                                    table = addToList(table, $2, "bool", "true");
+                                        table = updateItem(table, $1, "true");
                                     }else{
-                                    table = addToList(table, $2, "bool", "false");
+                                        table = updateItem(table, $1, "false");
                                     }
-                                    $$ = $2;}
+                                    $$ = $1;
+                                }
             ;
 
-boolexpr    : BOOLEAN {$$ = $1;}
-            | ID    {$$ = getBoolean(table, $1);}
+
+insertation : INT ID                { 
+                                    table = addToList(table, $2, "int", "0");
+                                    printf("Variable %s\n", $2);
+                                    $$ = $2;}
+            | DOU ID                { table = addToList(table, $2, "double","0.0");
+                                    printf("Variable %s\n", $2);
+                                    $$ = $2;}
+            | BOOLEAN ID            { table = addToList(table, $2, "bool", "true");
+                                    printf("Variable %s\n", $2);
+                                    $$ = $2;}
+
+
+
+boolexpr    : BOOL          {$$ = $1;}
+            | ID         { $$ = getBoolean(table, $1);}
             ;
 
 
@@ -136,7 +140,8 @@ int main(void)
 {
     table = NULL;
     printf("Enter expressions (Ctrl+D to exit):\n");
-    while (yyparse() == 0) {
+    while(1){
+        yyparse();
     }
     return 0;
 }
