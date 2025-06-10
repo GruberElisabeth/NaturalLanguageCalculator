@@ -35,34 +35,6 @@ struct Node *addToList(struct Node *list, char *addChar, char *type, char *value
 }
 
 
-int getInt(struct Node *list, char *name)
-{
-    if (list != NULL)
-    {
-        if ((strcmp(list->name, name) == 0) && (strcmp(list->type, "int") == 0))
-        {
-            return list->valInt;
-        }
-        struct Node *node = list;
-        while (node->next != NULL)
-        {
-            node = node->next;
-
-            if ((strcmp(node->name, name) == 0))
-            {
-                if (strcmp(node->type, "int") == 0)
-                {
-                    return node->valInt;
-                }
-                fprintf(stderr, "The variable with name:  %s is not of type int", name);
-                exit(1);
-            }
-        }
-    }
-    fprintf(stderr, "There is no integer with the name %s", name);
-    exit(1);
-}
-
 double getDouble(struct Node *list, char *name)
 {
     if (list != NULL)
@@ -127,7 +99,7 @@ bool getBoolean(struct Node *list, char *name)
     exit(1);
 }
 
-struct Node *deleteItem(struct Node *list, char *name)
+/*struct Node *deleteItem(struct Node *list, char *name)
 {
     if (list != NULL)
     {
@@ -150,7 +122,7 @@ struct Node *deleteItem(struct Node *list, char *name)
     }
     fprintf(stderr, "There is no Value with the name %s", name);
     exit(1);
-}
+}*/
 
 struct Node *updateItem(struct Node *list, char *name, char *value)
 {
@@ -162,14 +134,14 @@ struct Node *updateItem(struct Node *list, char *name, char *value)
             return list;
         }
         struct Node *node = list;
-        while (node->next != NULL)
+        while (node != NULL)
         {
-            node = node->next;
             if ((strcmp(node->name, name) == 0))
             {
-                insertVal(list, value, list->type);
+                insertVal(node, value, node->type);
                 return list;
             }
+            node = node->next;
         }
     }
     return NULL;

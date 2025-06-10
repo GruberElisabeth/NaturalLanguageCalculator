@@ -39,10 +39,11 @@ struct Node* table;
 %token IF
 %token WHILE
 %token ELSE
-%token <lexeme> ID
-%token <lexeme> BOOLEAN
+%token <lexeme> ID BOOLEAN RELATION BOOL_ID
 %token INT
 %token DOU
+%token BOOL
+%token ASSIGN
 
 %type <value> expr
 %type <value> number
@@ -63,9 +64,27 @@ struct Node* table;
 %start line 
 
 %%
-line  : expr '\n'      {$$ = $1; printf("Result: %f\n", $$); exit(0);}
-      | assignment '\n'  { printf("Assignment complete\n"); exit(0);}
-      | insertation '\n' { printf("Insertation complete\n"); exit(0);}
+line  
+      : assignment '\n'  { printList(table);}
+      | line assignment '\n' {printList(table);}
+      | insertation '\n' { printList(table); }
+      | line insertation '\n' {printList(table);}
+      | expr '\n'      {$$ = $1; printf("Result: %f\n", $$); }
+      | line expr '\n'  {$$ = $2; printf("Result: %f\n", $$); }
+      | boolexpr '\n' {
+            if ($1)
+                printf("Result: true\n");
+            else
+                printf("Result: false\n");
+            exit(0);
+        }
+      | line boolexpr '\n' {
+            if ($1)
+                printf("Result: true\n");
+            else
+                printf("Result: false\n");
+        }
+      
       ;
 
 number  : UNIT                  {$$ = $1;}
@@ -97,40 +116,57 @@ expr  : number              {$$ = $1;}
       | IF LPAREN boolexpr RPAREN expr ELSE expr %prec LOWEST   {$$ = $3?$5:$7;}
       ;
 
-assignment  : ID RELATION expr    {  char buffer[20];
-                                gcvt($3, 10, buffer);
-                                table = updateItem(table, $1, buffer);
-                                $$ = $1;}
-            | ID RELATION boolexpr { if($3){
-                                    table = updateItem(table, $1, "true");
-                                }else{
-                                    table = updateItem(table, $1, "false");
+
+assignment  : ID ASSIGN expr    {  char buffer[20];
+                                    gcvt($3, 10, buffer);
+                                    table = updateItem(table, $1, buffer);
+                                    $$ = $1;
                                 }
-                                $$ = $1;
+            | BOOL_ID ASSIGN boolexpr { if($3){
+                                        table = updateItem(table, $1, "true");
+                                    }else{
+                                        table = updateItem(table, $1, "false");
+                                    }
+                                    $$ = $1;
                                 }
+            | ID ASSIGN boolexpr {yyerror("You can't assign a boolean expression to an integer variable");}
+            | BOOL_ID ASSIGN expr {yyerror("You can't assign a numerical expression to a boolean variable");}
             ;
 
-insertation : INT ID RELATION expr { char buffer[20];
+insertation : INT ID ASSIGN expr { char buffer[20];
                                     gcvt($4, 10, buffer);
                                     table = addToList(table, $2, "int", buffer);
                                     $$ = $2;}
-            | DOU ID RELATION expr  { char buffer[20];
+            | DOU ID ASSIGN expr  { char buffer[20];
                                     gcvt($4, 10, buffer);
                                     table = addToList(table, $2, "double", buffer);
                                     $$ = $2;}
-            | BOOLEAN ID RELATION boolexpr { if($4){
+            | BOOL BOOL_ID ASSIGN boolexpr { if($4){
                                     table = addToList(table, $2, "bool", "true");
                                     }else{
                                     table = addToList(table, $2, "bool", "false");
                                     }
                                     $$ = $2;}
-
-
-
-boolexpr    : BOOLEAN {$$ = $1;}
-            | ID    {$$ = getBoolean(table, $1);}
+            | INT ID ASSIGN boolexpr {yyerror("You can't assign a boolean expression to an integer variable");}
+            | DOU ID ASSIGN boolexpr {yyerror("You can't assign a boolean expression to a double variable");}
+            | BOOL BOOL_ID ASSIGN expr {yyerror("You can't assign a numerical expression to a boolean variable");}
             ;
 
+boolexpr    : BOOLEAN       {$$ = $1;}
+            | BOOL_ID       {$$ = getBoolean(table, $1);}
+            | expr RELATION expr {
+                if (strcmp($2, "<") == 0) $$ = $1 < $3;
+                else if (strcmp($2, "<=") == 0) $$ = $1 <= $3;
+                else if (strcmp($2, ">") == 0) $$ = $1 > $3;
+                else if (strcmp($2, ">=") == 0) $$ = $1 >= $3;
+                else if (strcmp($2, "=") == 0) $$ = $1 = $3;
+                else if (strcmp($2, "!=") == 0) $$ = $1 != $3;
+                else {
+                    yyerror("Unknown relational operator");
+                    $$ = 0;
+                }
+            }
+            ;
 
 
 %%

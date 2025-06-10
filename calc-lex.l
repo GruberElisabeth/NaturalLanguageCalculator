@@ -56,9 +56,10 @@ DOU             double
 
 DIGIT           [0-9]
 LETTER          [a-zA-Z]*
+BOOL_ID         {LETTER}({LETTER}|{DIGIT})*[B]+
 ID              {LETTER}({LETTER}|{DIGIT})*
 
-BOOL            (true|false)
+BOOLEAN         (true|false)
 
 
 %%
@@ -124,13 +125,12 @@ BOOL            (true|false)
 "if"                                {return IF;}
 "else"                              {return ELSE;}
 
-"true"|"is true"                    {yylval.value = true; return BOOLEAN;}
-"false"|"is false"                  {yylval.value = false; return BOOLEAN;}
+"true"                              {yylval.value = true; return BOOLEAN;}
+"false"                             {yylval.value = false; return BOOLEAN;}
 
 "integer"                           {return INT;}
 "double"                            {return DOU;}
-"boolean"                           {return BOOLEAN;}
-{BOOL}                              {yylval.lexeme = strdup(yytext); return BOOL;}
+"boolean"                           {return BOOL;}
 
 "greater equal"|"greater equals"        {yylval.lexeme = strdup(">="); return RELATION;}
 "smaller equal"|"smaller equals"        {yylval.lexeme = strdup("<="); return RELATION;}
@@ -148,6 +148,7 @@ BOOL            (true|false)
 
 {RATIO}                             {return RATIO;}
 
+{BOOL_ID}                           {yylval.lexeme = strdup(yytext); return BOOL_ID;}
 {ID}                                {yylval.lexeme = strdup(yytext); return ID;}
 
 \n      {return '\n';}
