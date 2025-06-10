@@ -19,6 +19,8 @@ char* remove_plural(const char* str) {
     return copy;
 }
 
+
+
 %}
 
 UNIT            zero|one|two|three|four|five|six|seven|eight|nine|first|second|third|fifth|eighth|ninth
@@ -57,15 +59,15 @@ DOU             double
 
 DIGIT           [0-9]
 LETTER          [a-zA-Z]*
-ID              {LETTER}({LETTER}|{DIGIT})*
+ID              !(UNIT|TEEN|TEN|HUNDRED)th{LETTER}({LETTER}|{DIGIT})*
 
 %%
 
-[ \t]                           {/*skip blanks*/}
-"and"|"by"|"of"|"th"|"than"     {/*ignore*/}
+[ \t]                               {/*skip blanks*/}
+"and"|"by"|"of"|"than"|"from"  {/*ignore*/}
 
 "zero"              {yylval.value = 0; return UNIT;}
-"one"|"first"       {yylval.value = 1;  return UNIT;}
+"one"|"first"       {yylval.value = 1; return UNIT;}
 "two"|"second"      {yylval.value = 2; return UNIT;}
 "three"|"third"     {yylval.value = 3; return UNIT;}
 "four"              {yylval.value = 4; return UNIT;}
