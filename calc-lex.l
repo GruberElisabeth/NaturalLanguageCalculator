@@ -65,7 +65,8 @@ BOOLEAN         (true|false)
 %%
 
 [ \t]                          {/*skip blanks*/}
-"and"|"by"|"of"|"than"|"from"|"th"  {/*ignore*/}
+"and"|"by"|"of"|"than"|"from"|"th"'-'  {/*ignore*/}
+\-                 {/*ignore*/}
 
 "zero"              {yylval.value = 0; return UNIT;}
 "one"|"first"       {yylval.value = 1; return UNIT;}
@@ -102,8 +103,6 @@ BOOLEAN         (true|false)
 "thousand"      {yylval.value = 1000; return HUNDRED;}
 "million"       {yylval.value = 1000000; return HUNDRED;}
 "billion"       {yylval.value = 1000000000; return HUNDRED;}
-
-
 
 "plus"              { yylval.op = '+'; return PLUS; }
 "minus"             { yylval.op = '-';  return MINUS; }
@@ -149,7 +148,7 @@ BOOLEAN         (true|false)
 {RATIO}                             {return RATIO;}
 
 {BOOL_ID}                           {yylval.lexeme = strdup(yytext); return BOOL_ID;}
-{ID}                                {yylval.lexeme = strdup(yytext); return ID;}
+{ID}                                {yylval.lexeme = strdup(yytext + 6); return ID;}
 
 \n      {return '\n';}
 

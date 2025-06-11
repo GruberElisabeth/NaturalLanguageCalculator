@@ -18,10 +18,79 @@ struct Node* table;
 
 #define YYDEBUG 1  // Enable debug mode
 
+const char* number_to_word(int num) {
+    static const char* units[] = {
+        "zero", "one", "two", "three", "four", "five",
+        "six", "seven", "eight", "nine", "ten", "eleven",
+        "twelve", "thirteen", "fourteen", "fifteen",
+        "sixteen", "seventeen", "eighteen", "nineteen"
+    };
+    
+    static const char* ten[] = {
+        "", "", "twenty", "thirty", "forty", "fifty",
+        "sixty", "seventy", "eighty", "ninety"
+    };
+    
+    static char buf[32];
+
+    if (num < 0 || num >= 100) {
+        return "number out of range";
+    } else if (num < 20) {
+        return units[num];
+    } else if (num % 10 == 0) {
+        return ten[num / 10];
+    } else {
+        snprintf(buf, sizeof(buf), "%s-%s", ten[num / 10], units[num % 10]);
+        return buf;
+    }
+}
+
+char* number_to_word_double(double num) {
+    static char result[256];
+    result[0] = '\0';
+
+    if (num < 0) {
+        strcat(result, "negative ");
+        num = -num;
+    }
+
+    int integer_part = (int)num;
+    double fractional_part = num - integer_part;
+
+    if (integer_part >= 0 && integer_part <= 100) {
+        strcat(result, number_to_word(integer_part));
+    } else {
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%d", integer_part);
+        strcat(result, buf);
+    }
+    
+    if (fractional_part > 0) {
+        strcat(result, " point");
+
+        fractional_part = fractional_part * 1000;
+        int frac_int = (int)(fractional_part + 0.5);
+
+        char frac_str[20];
+        snprintf(frac_str, sizeof(frac_str), "%03d", frac_int);
+
+        int len = strlen(frac_str);
+        while (len > 0 && frac_str[len-1] == '0') {
+            frac_str[len-1] = '\0';
+            len--;
+        }
+
+        for (int i = 0; i < len; i++) {
+            strcat(result, " ");
+            strcat(result, number_to_word(frac_str[i] - '0'));
+        }
+    }
+    return result;
+}
+
 %}
 
 %debug
-
 
 %union {
         double value;
@@ -30,7 +99,6 @@ struct Node* table;
         bool condition;
         char* measure;
        }
-
 
 %token <value> UNIT TEEN TEN HUNDRED INTEGER DOUBLE NUM
 %token <op> POINT EXP FACT NEG PLUS MINUS TIMES DIVIDE LPAREN RPAREN
@@ -69,8 +137,8 @@ line
       | line assignment '\n' {printList(table);}
       | insertation '\n' { printList(table); }
       | line insertation '\n' {printList(table);}
-      | expr '\n'      {$$ = $1; printf("Result: %f\n", $$); }
-      | line expr '\n'  {$$ = $2; printf("Result: %f\n", $$); }
+      | expr '\n'      {$$ = $1; printf("Result: %s\n", number_to_word_double($1));}
+      | line expr '\n'  {$$ = $2; printf("Result: %s\n", number_to_word_double($2));}
       | boolexpr '\n' {
             if ($1)
                 printf("Result: true\n");
@@ -91,7 +159,8 @@ number  : integer                       {$$ = $1;}
         ;
 
 integer : UNIT                          {$$ = $1;}
-        | TEEN                           {$$ = $1;}
+        | TEEN                          {$$ = $1;}
+        | TEN                           {$$ = $1;}
         | TEN UNIT                      {$$ = $1 + $2;}
         | UNIT HUNDRED                  {$$ = $1 * $2;}
         | UNIT HUNDRED integer          {$$ = $1 * $2 + $3;}
@@ -123,7 +192,6 @@ expr  : number              {$$ = $1;}
       | WHILE LPAREN boolexpr RPAREN expr %prec LOWEST          {$$ = $5;}
       | IF LPAREN boolexpr RPAREN expr ELSE expr %prec LOWEST   {$$ = $3?$5:$7;}
       ;
-
 
 assignment  : ID ASSIGN expr    {  char buffer[20];
                                     gcvt($3, 10, buffer);
@@ -175,7 +243,6 @@ boolexpr    : BOOLEAN       {$$ = $1;}
                 }
             }
             ;
-
 
 %%
 
