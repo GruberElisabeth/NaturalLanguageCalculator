@@ -69,8 +69,8 @@ line
       | line assignment '\n' {printList(table);}
       | insertation '\n' { printList(table); }
       | line insertation '\n' {printList(table);}
-      | expr '\n'      {$$ = $1; printf("Result: %f\n", $$); }
-      | line expr '\n'  {$$ = $2; printf("Result: %f\n", $$); }
+      | expr '\n'      {$$ = $1; printf("Result: %g\n", $$); }
+      | line expr '\n'  {$$ = $2; printf("Result: %g\n", $$); }
       | boolexpr '\n' {
             if ($1)
                 printf("Result: true\n");
