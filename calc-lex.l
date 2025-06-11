@@ -49,8 +49,6 @@ TIME            (day|hour|minute|second|millisecond)s?
 SPACE           ((kilo|centi|milli)?meter|mile)s?|foot|feet|inch(es)?
 VOLUME          ((milli)?liter)s?
 
-RATIO           (per)
-
 INT             integer
 DOU             double
 
@@ -70,7 +68,7 @@ BOOLEAN         (true|false)
 
 "zero"              {yylval.value = 0; return UNIT;}
 "one"|"first"       {yylval.value = 1; return UNIT;}
-"two"|"second"      {yylval.value = 2; return UNIT;}
+"two"     {yylval.value = 2; return UNIT;}
 "three"|"third"     {yylval.value = 3; return UNIT;}
 "four"              {yylval.value = 4; return UNIT;}
 "five"|"fifth"      {yylval.value = 5; return UNIT;}
@@ -107,7 +105,7 @@ BOOLEAN         (true|false)
 "plus"              { yylval.op = '+'; return PLUS; }
 "minus"             { yylval.op = '-';  return MINUS; }
 "times"             { yylval.op = '*'; return TIMES; }
-"divide"            { yylval.op = '/'; return DIVIDE; }
+"divided by"            { yylval.op = '/'; return DIVIDE; }
 
 "open"[ ]*"parenthesis"             {yylval.op = '('; return LPAREN;}
 "close"[ ]*"parenthesis"            {yylval.op = ')'; return RPAREN;}
@@ -140,12 +138,37 @@ BOOLEAN         (true|false)
 
 "is"                                 {return ASSIGN;}
 
-{SPACE}                             {yylval.measure = remove_plural(yytext); return SPACE;}
-{WEIGHT}                            {yylval.measure = remove_plural(yytext); return WEIGHT;}
-{TIME}                              {yylval.measure = remove_plural(yytext); return TIME;}               
-{VOLUME}                            {yylval.measure = remove_plural(yytext); return VOLUME;}
+{SPACE} {
+    yylval.quantity.unit = remove_plural(yytext);
+    yylval.quantity.type = strdup("SPACE");
+    yylval.quantity.value = 1;
+    yylval.quantity.dimension = 1;
+    return MEASURE;
+}
 
-{RATIO}                             {return RATIO;}
+{WEIGHT} {
+    yylval.quantity.unit = remove_plural(yytext);
+    yylval.quantity.type = strdup("WEIGHT");
+    yylval.quantity.value = 1;
+    yylval.quantity.dimension = 1;
+    return MEASURE;
+}
+
+{TIME} {
+    yylval.quantity.unit = remove_plural(yytext);
+    yylval.quantity.type = strdup("TIME");
+    yylval.quantity.value = 1;
+    yylval.quantity.dimension = 1;
+    return MEASURE;
+}
+
+{VOLUME} {
+    yylval.quantity.unit = remove_plural(yytext);
+    yylval.quantity.type = strdup("VOLUME");
+    yylval.quantity.value = 1;
+    yylval.quantity.dimension = 1;
+    return MEASURE;
+}
 
 {BOOL_ID}                           {yylval.lexeme = strdup(yytext); return BOOL_ID;}
 {ID}                                {yylval.lexeme = strdup(yytext); return ID;}
