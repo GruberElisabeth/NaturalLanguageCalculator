@@ -148,7 +148,7 @@ BOOLEAN         (true|false)
 {RATIO}                             {return RATIO;}
 
 {BOOL_ID}                           {yylval.lexeme = strdup(yytext); return BOOL_ID;}
-{ID}                                {yylval.lexeme = strdup(yytext + 6); return ID;}
+{ID}                                {yylval.lexeme = strdup(yytext); return ID;}
 
 \n      {return '\n';}
 
