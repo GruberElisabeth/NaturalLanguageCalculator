@@ -91,7 +91,7 @@ number  : integer                       {$$ = $1;}
         ;
 
 integer : UNIT                          {$$ = $1;}
-        | TEN                           {$$ = $1;}
+        | TEEN                           {$$ = $1;}
         | TEN UNIT                      {$$ = $1 + $2;}
         | UNIT HUNDRED                  {$$ = $1 * $2;}
         | UNIT HUNDRED integer          {$$ = $1 * $2 + $3;}
