@@ -21,7 +21,7 @@ typedef struct {
     double value;
     char* unit;
     char* type;
-    int dimension;
+    double dimension;
 } Quantity;
 
 typedef struct {
@@ -356,7 +356,7 @@ quantity: number MEASURE                { $2.value = $1; $$ = $2; }
         | expr FACT MEASURE             {$3.value = factorial($1); $$ = $3;}
         | NEG expr MEASURE              {$3.value = - $2; $$ = $3;}
         | MINUS expr MEASURE %prec NEG  {$3.value = - $2; $$ = $3;}
-/*      | LPAREN quantity RPAREN        {$$ = $2;} */
+        | LPAREN quantity RPAREN        {$$ = $2;}
         ;
 
 assignment  : ID ASSIGN expr    {  char buffer[20];

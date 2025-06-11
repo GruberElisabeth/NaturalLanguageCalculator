@@ -68,7 +68,7 @@ BOOLEAN         (true|false)
 
 "zero"              {yylval.value = 0; return UNIT;}
 "one"|"first"       {yylval.value = 1; return UNIT;}
-"two"     {yylval.value = 2; return UNIT;}
+"two"               {yylval.value = 2; return UNIT;}
 "three"|"third"     {yylval.value = 3; return UNIT;}
 "four"              {yylval.value = 4; return UNIT;}
 "five"|"fifth"      {yylval.value = 5; return UNIT;}
