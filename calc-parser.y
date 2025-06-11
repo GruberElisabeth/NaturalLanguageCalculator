@@ -103,30 +103,65 @@ Quantity convert_quantity(Quantity from_q, const char* to_unit_name) {
 
 #define YYDEBUG 1  // Enable debug mode
 
-const char* number_to_word(int num) {
-    static const char* units[] = {
-        "zero", "one", "two", "three", "four", "five",
-        "six", "seven", "eight", "nine", "ten", "eleven",
-        "twelve", "thirteen", "fourteen", "fifteen",
-        "sixteen", "seventeen", "eighteen", "nineteen"
-    };
-    
-    static const char* ten[] = {
-        "", "", "twenty", "thirty", "forty", "fifty",
-        "sixty", "seventy", "eighty", "ninety"
-    };
-    
-    static char buf[32];
+/*methods to convert result back into natural language*/
+const char* units[] = {
+    "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
+};
 
-    if (num < 0 || num >= 100) {
-        return "number out of range";
-    } else if (num < 20) {
-        return units[num];
-    } else if (num % 10 == 0) {
-        return ten[num / 10];
-    } else {
-        snprintf(buf, sizeof(buf), "%s-%s", ten[num / 10], units[num % 10]);
-        return buf;
+const char* teens[] = {
+    "ten", "eleven", "twelve", "thirteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"
+};
+    
+const char* tens[] = {
+    "", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"
+};
+
+const char* number_to_word(int digit) {
+    return units[digit];
+}
+    
+void number_to_words_int(int num, char* buffer){
+    if (num == 0) {
+        strcat(buffer, "zero");
+        return;
+    }
+if (num >= 1000000000) {
+        number_to_words_int(num / 1000000000, buffer);
+        strcat(buffer, " billion ");
+        num %= 1000000000;
+    }
+
+    if (num >= 1000000) {
+        number_to_words_int(num / 1000000, buffer);
+        strcat(buffer, " million ");
+        num %= 1000000;
+    }
+
+    if (num >= 1000) {
+        number_to_words_int(num / 1000, buffer);
+        strcat(buffer, " thousand ");
+        num %= 1000;
+    }
+
+    if (num >= 100) {
+        strcat(buffer, units[num / 100]);
+        strcat(buffer, " hundred ");
+        num %= 100;
+    }
+
+    if (num >= 20) {
+        strcat(buffer, tens[num / 10]);
+        strcat(buffer, " ");
+        num %= 10;
+    } else if (num >= 10) {
+        strcat(buffer, teens[num - 10]);
+        strcat(buffer, " ");
+        return;
+    }
+
+    if (num > 0) {
+        strcat(buffer, units[num]);
+        strcat(buffer, " ");
     }
 }
 
@@ -142,16 +177,10 @@ char* number_to_word_double(double num) {
     int integer_part = (int)num;
     double fractional_part = num - integer_part;
 
-    if (integer_part >= 0 && integer_part <= 100) {
-        strcat(result, number_to_word(integer_part));
-    } else {
-        char buf[32];
-        snprintf(buf, sizeof(buf), "%d", integer_part);
-        strcat(result, buf);
-    }
+    number_to_words_int(integer_part, result);
     
     if (fractional_part > 0) {
-        strcat(result, " point");
+        strcat(result, "point");
 
         fractional_part = fractional_part * 1000;
         int frac_int = (int)(fractional_part + 0.5);
@@ -182,7 +211,7 @@ void print_quantity(Quantity quantity) {
     printf("Result: %s", number_to_word_double(quantity.value));
 
     if (quantity.dimension != 0) {
-        printf(" %s", quantity.unit);
+        printf("%s", quantity.unit);
 
         if (quantity.value != 1 && quantity.value != -1) {
             if (strcmp(quantity.unit, "inch") == 0) {
