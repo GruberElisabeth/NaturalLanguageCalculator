@@ -48,11 +48,11 @@ struct Node* table;
 %type <value> expr
 %type <value> number
 %type <value> line
+%type <value> integer
+%type <value> fraction
 %type <condition> boolexpr
 %type <lexeme> assignment
 %type <lexeme> insertation
-
-
 
 %right '='
 %left PLUS MINUS
@@ -86,14 +86,21 @@ line
         }
       
       ;
-
-number  : UNIT                  {$$ = $1;}
-        | TEEN                  {$$ = $1;}
-        | TEN                   {$$ = $1;}
-        | TEN UNIT              {$$ = $1 + $2;}
-        | UNIT HUNDRED          {$$ = $1 * $2;}
-        | UNIT HUNDRED number   {$$ = $1 * $2 + $3;}
+number  : integer                       {$$ = $1;}
+        | integer POINT fraction        {$$ = $1 + $3;}
         ;
+
+integer : UNIT                          {$$ = $1;}
+        | TEN                           {$$ = $1;}
+        | TEN UNIT                      {$$ = $1 + $2;}
+        | UNIT HUNDRED                  {$$ = $1 * $2;}
+        | UNIT HUNDRED integer          {$$ = $1 * $2 + $3;}
+        ;
+
+fraction    : UNIT                      {$$ = $1 * 0.1;}
+            | UNIT UNIT                 {$$ = $1 * 0.1 + $2 * 0.01;}
+            | UNIT UNIT UNIT            {$$ = $1 * 0.1 + $2 * 0.01 + $3 * 0.001;}
+            ;
 
 expr  : number              {$$ = $1;}
       | expr PLUS expr      {$$ = $1 + $3;}
@@ -107,7 +114,7 @@ expr  : number              {$$ = $1;}
                 yyerror("factorial can just be made for positive Integer");
                 exit(1);
             }
-            }
+      }
       | MINUS expr %prec NEG            {$$ = - $2;}
       | expr EXP expr %prec EXP         {$$ = pow($1, $3);}
       | LPAREN expr RPAREN              {$$ = $2;}
