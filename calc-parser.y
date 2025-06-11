@@ -115,6 +115,7 @@ expr  : number              {$$ = $1;}
                 exit(1);
             }
       }
+      | NEG expr                        {$$ = - $2;}
       | MINUS expr %prec NEG            {$$ = - $2;}
       | expr EXP expr %prec EXP         {$$ = pow($1, $3);}
       | LPAREN expr RPAREN              {$$ = $2;}
