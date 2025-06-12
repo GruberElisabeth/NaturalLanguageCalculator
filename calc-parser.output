@@ -15,40 +15,40 @@ Grammar
     2     | line assignment '\n'
     3     | insertation '\n'
     4     | line insertation '\n'
-    5     | expr '\n'
-    6     | line expr '\n'
-    7     | quantity '\n'
-    8     | line quantity '\n'
-    9     | boolexpr '\n'
-   10     | line boolexpr '\n'
+    5     | statements '\n'
+    6     | line statements '\n'
+    7     | expr '\n'
+    8     | line expr '\n'
+    9     | quantity '\n'
+   10     | line quantity '\n'
+   11     | boolexpr '\n'
+   12     | line boolexpr '\n'
 
-   11 number: integer
-   12       | integer POINT fraction
+   13 number: integer
+   14       | integer POINT fraction
 
-   13 integer: UNIT
-   14        | TEEN
-   15        | TEN
-   16        | TEN UNIT
-   17        | UNIT HUNDRED
-   18        | UNIT HUNDRED integer
+   15 integer: UNIT
+   16        | TEEN
+   17        | TEN
+   18        | TEN UNIT
+   19        | UNIT HUNDRED
+   20        | UNIT HUNDRED integer
 
-   19 fraction: UNIT
-   20         | UNIT UNIT
-   21         | UNIT UNIT UNIT
+   21 fraction: UNIT
+   22         | UNIT UNIT
+   23         | UNIT UNIT UNIT
 
-   22 expr: number
-   23     | expr PLUS expr
-   24     | expr MINUS expr
-   25     | expr TIMES expr
-   26     | expr DIVIDE expr
-   27     | expr FACT
-   28     | NEG expr
-   29     | MINUS expr
-   30     | expr EXP expr
-   31     | LPAREN expr RPAREN
-   32     | ID
-   33     | WHILE LPAREN boolexpr RPAREN expr
-   34     | IF LPAREN boolexpr RPAREN expr ELSE expr
+   24 expr: number
+   25     | expr PLUS expr
+   26     | expr MINUS expr
+   27     | expr TIMES expr
+   28     | expr DIVIDE expr
+   29     | expr FACT
+   30     | NEG expr
+   31     | MINUS expr
+   32     | expr EXP expr
+   33     | LPAREN expr RPAREN
+   34     | ID
 
    35 quantity: number MEASURE
    36         | quantity PLUS quantity
@@ -63,60 +63,66 @@ Grammar
    45         | expr FACT MEASURE
    46         | NEG expr MEASURE
    47         | MINUS expr MEASURE
-   48         | LPAREN quantity RPAREN
+   48         | LPAREN parenquantity RPAREN
+   49         | parenquantity EXP expr
 
-   49 assignment: ID ASSIGN expr
-   50           | BOOL_ID ASSIGN boolexpr
-   51           | ID ASSIGN boolexpr
-   52           | BOOL_ID ASSIGN expr
+   50 parenquantity: LPAREN quantity RPAREN
 
-   53 insertation: INT ID ASSIGN expr
-   54            | DOU ID ASSIGN expr
-   55            | BOOL BOOL_ID ASSIGN boolexpr
-   56            | INT ID ASSIGN boolexpr
-   57            | DOU ID ASSIGN boolexpr
-   58            | BOOL BOOL_ID ASSIGN expr
+   51 assignment: ID ASSIGN expr
+   52           | BOOL_ID ASSIGN boolexpr
+   53           | ID ASSIGN boolexpr
+   54           | BOOL_ID ASSIGN expr
 
-   59 boolexpr: BOOLEAN
-   60         | BOOL_ID
-   61         | expr RELATION expr
+   55 insertation: INT ID ASSIGN expr
+   56            | DOU ID ASSIGN expr
+   57            | BOOL BOOL_ID ASSIGN boolexpr
+   58            | INT ID ASSIGN boolexpr
+   59            | DOU ID ASSIGN boolexpr
+   60            | BOOL BOOL_ID ASSIGN expr
+
+   61 statements: WHILE LPAREN boolexpr RPAREN expr
+   62           | IF LPAREN boolexpr RPAREN expr ELSE expr
+
+   63 boolexpr: BOOLEAN
+   64         | BOOL_ID
+   65         | expr RELATION expr
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    '\n' (10) 1 2 3 4 5 6 7 8 9 10
+    '\n' (10) 1 2 3 4 5 6 7 8 9 10 11 12
     '=' (61)
     error (256)
-    UNIT <value> (258) 13 16 17 18 19 20 21
-    TEEN <value> (259) 14
-    TEN <value> (260) 15 16
-    HUNDRED <value> (261) 17 18
+    UNIT <value> (258) 15 18 19 20 21 22 23
+    TEEN <value> (259) 16
+    TEN <value> (260) 17 18
+    HUNDRED <value> (261) 19 20
     INTEGER <value> (262)
     DOUBLE <value> (263)
     NUM <value> (264)
-    POINT <op> (265) 12
-    EXP <op> (266) 30 40
-    FACT <op> (267) 27 45
-    NEG <op> (268) 28 46
-    PLUS <op> (269) 23 36
-    MINUS <op> (270) 24 29 37 47
-    TIMES <op> (271) 25 38 41 43
-    DIVIDE <op> (272) 26 39 42 44
-    LPAREN <op> (273) 31 33 34 48
-    RPAREN <op> (274) 31 33 34 48
+    POINT <op> (265) 14
+    EXP <op> (266) 32 40 49
+    FACT <op> (267) 29 45
+    NEG <op> (268) 30 46
+    PLUS <op> (269) 25 36
+    MINUS <op> (270) 26 31 37 47
+    TIMES <op> (271) 27 38 41 43
+    DIVIDE <op> (272) 28 39 42 44
+    LPAREN <op> (273) 33 48 50 61 62
+    RPAREN <op> (274) 33 48 50 61 62
     RATIO (275)
-    IF (276) 34
-    WHILE (277) 33
-    ELSE (278) 34
-    ID <lexeme> (279) 32 49 51 53 54 56 57
-    BOOLEAN <lexeme> (280) 59
-    RELATION <lexeme> (281) 61
-    BOOL_ID <lexeme> (282) 50 52 55 58 60
-    INT (283) 53 56
-    DOU (284) 54 57
-    BOOL (285) 55 58
-    ASSIGN (286) 49 50 51 52 53 54 55 56 57 58
+    IF (276) 62
+    WHILE (277) 61
+    ELSE (278) 62
+    ID <lexeme> (279) 34 51 53 55 56 58 59
+    BOOLEAN <lexeme> (280) 63
+    RELATION <lexeme> (281) 65
+    BOOL_ID <lexeme> (282) 52 54 57 60 64
+    INT (283) 55 58
+    DOU (284) 56 59
+    BOOL (285) 57 60
+    ASSIGN (286) 51 52 53 54 55 56 57 58 59 60
     MEASURE <quantity> (287) 35 45 46 47
     LOWEST (288)
 
@@ -126,32 +132,38 @@ Nonterminals, with rules where they appear
     $accept (36)
         on left: 0
     line <value> (37)
-        on left: 1 2 3 4 5 6 7 8 9 10
-        on right: 0 2 4 6 8 10
+        on left: 1 2 3 4 5 6 7 8 9 10 11 12
+        on right: 0 2 4 6 8 10 12
     number <value> (38)
-        on left: 11 12
-        on right: 22 35
+        on left: 13 14
+        on right: 24 35
     integer <value> (39)
-        on left: 13 14 15 16 17 18
-        on right: 11 12 18
+        on left: 15 16 17 18 19 20
+        on right: 13 14 20
     fraction <value> (40)
-        on left: 19 20 21
-        on right: 12
+        on left: 21 22 23
+        on right: 14
     expr <value> (41)
-        on left: 22 23 24 25 26 27 28 29 30 31 32 33 34
-        on right: 5 6 23 24 25 26 27 28 29 30 31 33 34 40 41 42 43 44 45 46 47 49 52 53 54 58 61
+        on left: 24 25 26 27 28 29 30 31 32 33 34
+        on right: 7 8 25 26 27 28 29 30 31 32 33 40 41 42 43 44 45 46 47 49 51 54 55 56 60 61 62 65
     quantity <quantity> (42)
-        on left: 35 36 37 38 39 40 41 42 43 44 45 46 47 48
-        on right: 7 8 36 37 38 39 40 41 42 43 44 48
-    assignment <lexeme> (43)
-        on left: 49 50 51 52
+        on left: 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+        on right: 9 10 36 37 38 39 40 41 42 43 44 50
+    parenquantity <quantity> (43)
+        on left: 50
+        on right: 48 49
+    assignment <lexeme> (44)
+        on left: 51 52 53 54
         on right: 1 2
-    insertation <lexeme> (44)
-        on left: 53 54 55 56 57 58
+    insertation <lexeme> (45)
+        on left: 55 56 57 58 59 60
         on right: 3 4
-    boolexpr <condition> (45)
-        on left: 59 60 61
-        on right: 9 10 33 34 50 51 55 56 57
+    statements <value> (46)
+        on left: 61 62
+        on right: 5 6
+    boolexpr <condition> (47)
+        on left: 63 64 65
+        on right: 11 12 52 53 57 58 59 61 62
 
 
 State 0
@@ -173,88 +185,87 @@ State 0
     DOU      shift, and go to state 13
     BOOL     shift, and go to state 14
 
-    line         go to state 15
-    number       go to state 16
-    integer      go to state 17
-    expr         go to state 18
-    quantity     go to state 19
-    assignment   go to state 20
-    insertation  go to state 21
-    boolexpr     go to state 22
+    line           go to state 15
+    number         go to state 16
+    integer        go to state 17
+    expr           go to state 18
+    quantity       go to state 19
+    parenquantity  go to state 20
+    assignment     go to state 21
+    insertation    go to state 22
+    statements     go to state 23
+    boolexpr       go to state 24
 
 
 State 1
 
-   13 integer: UNIT •
-   17        | UNIT • HUNDRED
-   18        | UNIT • HUNDRED integer
+   15 integer: UNIT •
+   19        | UNIT • HUNDRED
+   20        | UNIT • HUNDRED integer
 
-    HUNDRED  shift, and go to state 23
-
-    $default  reduce using rule 13 (integer)
-
-
-State 2
-
-   14 integer: TEEN •
-
-    $default  reduce using rule 14 (integer)
-
-
-State 3
-
-   15 integer: TEN •
-   16        | TEN • UNIT
-
-    UNIT  shift, and go to state 24
+    HUNDRED  shift, and go to state 25
 
     $default  reduce using rule 15 (integer)
 
 
+State 2
+
+   16 integer: TEEN •
+
+    $default  reduce using rule 16 (integer)
+
+
+State 3
+
+   17 integer: TEN •
+   18        | TEN • UNIT
+
+    UNIT  shift, and go to state 26
+
+    $default  reduce using rule 17 (integer)
+
+
 State 4
 
-   28 expr: NEG • expr
+   30 expr: NEG • expr
    46 quantity: NEG • expr MEASURE
 
     UNIT    shift, and go to state 1
     TEEN    shift, and go to state 2
     TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
 
-    number   go to state 29
+    number   go to state 31
     integer  go to state 17
-    expr     go to state 30
+    expr     go to state 32
 
 
 State 5
 
-   29 expr: MINUS • expr
+   31 expr: MINUS • expr
    47 quantity: MINUS • expr MEASURE
 
     UNIT    shift, and go to state 1
     TEEN    shift, and go to state 2
     TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
 
-    number   go to state 29
+    number   go to state 31
     integer  go to state 17
-    expr     go to state 31
+    expr     go to state 33
 
 
 State 6
 
-   31 expr: LPAREN • expr RPAREN
-   48 quantity: LPAREN • quantity RPAREN
+   33 expr: LPAREN • expr RPAREN
+   48 quantity: LPAREN • parenquantity RPAREN
+   50 parenquantity: LPAREN • quantity RPAREN
 
     UNIT    shift, and go to state 1
     TEEN    shift, and go to state 2
@@ -262,81 +273,80 @@ State 6
     NEG     shift, and go to state 4
     MINUS   shift, and go to state 5
     LPAREN  shift, and go to state 6
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    ID      shift, and go to state 30
 
-    number    go to state 16
-    integer   go to state 17
-    expr      go to state 32
-    quantity  go to state 33
+    number         go to state 16
+    integer        go to state 17
+    expr           go to state 34
+    quantity       go to state 35
+    parenquantity  go to state 36
 
 
 State 7
 
-   34 expr: IF • LPAREN boolexpr RPAREN expr ELSE expr
+   62 statements: IF • LPAREN boolexpr RPAREN expr ELSE expr
 
-    LPAREN  shift, and go to state 34
+    LPAREN  shift, and go to state 37
 
 
 State 8
 
-   33 expr: WHILE • LPAREN boolexpr RPAREN expr
+   61 statements: WHILE • LPAREN boolexpr RPAREN expr
 
-    LPAREN  shift, and go to state 35
+    LPAREN  shift, and go to state 38
 
 
 State 9
 
-   32 expr: ID •
-   49 assignment: ID • ASSIGN expr
-   51           | ID • ASSIGN boolexpr
+   34 expr: ID •
+   51 assignment: ID • ASSIGN expr
+   53           | ID • ASSIGN boolexpr
 
-    ASSIGN  shift, and go to state 36
+    ASSIGN  shift, and go to state 39
 
-    $default  reduce using rule 32 (expr)
+    $default  reduce using rule 34 (expr)
 
 
 State 10
 
-   59 boolexpr: BOOLEAN •
+   63 boolexpr: BOOLEAN •
 
-    $default  reduce using rule 59 (boolexpr)
+    $default  reduce using rule 63 (boolexpr)
 
 
 State 11
 
-   50 assignment: BOOL_ID • ASSIGN boolexpr
-   52           | BOOL_ID • ASSIGN expr
-   60 boolexpr: BOOL_ID •
+   52 assignment: BOOL_ID • ASSIGN boolexpr
+   54           | BOOL_ID • ASSIGN expr
+   64 boolexpr: BOOL_ID •
 
-    ASSIGN  shift, and go to state 37
+    ASSIGN  shift, and go to state 40
 
-    $default  reduce using rule 60 (boolexpr)
+    $default  reduce using rule 64 (boolexpr)
 
 
 State 12
 
-   53 insertation: INT • ID ASSIGN expr
-   56            | INT • ID ASSIGN boolexpr
+   55 insertation: INT • ID ASSIGN expr
+   58            | INT • ID ASSIGN boolexpr
 
-    ID  shift, and go to state 38
+    ID  shift, and go to state 41
 
 
 State 13
 
-   54 insertation: DOU • ID ASSIGN expr
-   57            | DOU • ID ASSIGN boolexpr
+   56 insertation: DOU • ID ASSIGN expr
+   59            | DOU • ID ASSIGN boolexpr
 
-    ID  shift, and go to state 39
+    ID  shift, and go to state 42
 
 
 State 14
 
-   55 insertation: BOOL • BOOL_ID ASSIGN boolexpr
-   58            | BOOL • BOOL_ID ASSIGN expr
+   57 insertation: BOOL • BOOL_ID ASSIGN boolexpr
+   60            | BOOL • BOOL_ID ASSIGN expr
 
-    BOOL_ID  shift, and go to state 40
+    BOOL_ID  shift, and go to state 43
 
 
 State 15
@@ -344,11 +354,12 @@ State 15
     0 $accept: line • $end
     2 line: line • assignment '\n'
     4     | line • insertation '\n'
-    6     | line • expr '\n'
-    8     | line • quantity '\n'
-   10     | line • boolexpr '\n'
+    6     | line • statements '\n'
+    8     | line • expr '\n'
+   10     | line • quantity '\n'
+   12     | line • boolexpr '\n'
 
-    $end     shift, and go to state 41
+    $end     shift, and go to state 44
     UNIT     shift, and go to state 1
     TEEN     shift, and go to state 2
     TEN      shift, and go to state 3
@@ -364,62 +375,64 @@ State 15
     DOU      shift, and go to state 13
     BOOL     shift, and go to state 14
 
-    number       go to state 16
-    integer      go to state 17
-    expr         go to state 42
-    quantity     go to state 43
-    assignment   go to state 44
-    insertation  go to state 45
-    boolexpr     go to state 46
+    number         go to state 16
+    integer        go to state 17
+    expr           go to state 45
+    quantity       go to state 46
+    parenquantity  go to state 20
+    assignment     go to state 47
+    insertation    go to state 48
+    statements     go to state 49
+    boolexpr       go to state 50
 
 
 State 16
 
-   22 expr: number •
+   24 expr: number •
    35 quantity: number • MEASURE
 
-    MEASURE  shift, and go to state 47
+    MEASURE  shift, and go to state 51
 
-    $default  reduce using rule 22 (expr)
+    $default  reduce using rule 24 (expr)
 
 
 State 17
 
-   11 number: integer •
-   12       | integer • POINT fraction
+   13 number: integer •
+   14       | integer • POINT fraction
 
-    POINT  shift, and go to state 48
+    POINT  shift, and go to state 52
 
-    $default  reduce using rule 11 (number)
+    $default  reduce using rule 13 (number)
 
 
 State 18
 
-    5 line: expr • '\n'
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
+    7 line: expr • '\n'
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
    41 quantity: expr • TIMES quantity
    42         | expr • DIVIDE quantity
    45         | expr • FACT MEASURE
-   61 boolexpr: expr • RELATION expr
+   65 boolexpr: expr • RELATION expr
 
-    EXP       shift, and go to state 49
-    FACT      shift, and go to state 50
-    PLUS      shift, and go to state 51
-    MINUS     shift, and go to state 52
-    TIMES     shift, and go to state 53
-    DIVIDE    shift, and go to state 54
-    RELATION  shift, and go to state 55
-    '\n'      shift, and go to state 56
+    EXP       shift, and go to state 53
+    FACT      shift, and go to state 54
+    PLUS      shift, and go to state 55
+    MINUS     shift, and go to state 56
+    TIMES     shift, and go to state 57
+    DIVIDE    shift, and go to state 58
+    RELATION  shift, and go to state 59
+    '\n'      shift, and go to state 60
 
 
 State 19
 
-    7 line: quantity • '\n'
+    9 line: quantity • '\n'
    36 quantity: quantity • PLUS quantity
    37         | quantity • MINUS quantity
    38         | quantity • TIMES quantity
@@ -428,186 +441,194 @@ State 19
    43         | quantity • TIMES expr
    44         | quantity • DIVIDE expr
 
-    EXP     shift, and go to state 57
-    PLUS    shift, and go to state 58
-    MINUS   shift, and go to state 59
-    TIMES   shift, and go to state 60
-    DIVIDE  shift, and go to state 61
-    '\n'    shift, and go to state 62
+    EXP     shift, and go to state 61
+    PLUS    shift, and go to state 62
+    MINUS   shift, and go to state 63
+    TIMES   shift, and go to state 64
+    DIVIDE  shift, and go to state 65
+    '\n'    shift, and go to state 66
 
 
 State 20
 
-    1 line: assignment • '\n'
+   49 quantity: parenquantity • EXP expr
 
-    '\n'  shift, and go to state 63
+    EXP  shift, and go to state 67
 
 
 State 21
 
-    3 line: insertation • '\n'
+    1 line: assignment • '\n'
 
-    '\n'  shift, and go to state 64
+    '\n'  shift, and go to state 68
 
 
 State 22
 
-    9 line: boolexpr • '\n'
+    3 line: insertation • '\n'
 
-    '\n'  shift, and go to state 65
+    '\n'  shift, and go to state 69
 
 
 State 23
 
-   17 integer: UNIT HUNDRED •
-   18        | UNIT HUNDRED • integer
+    5 line: statements • '\n'
+
+    '\n'  shift, and go to state 70
+
+
+State 24
+
+   11 line: boolexpr • '\n'
+
+    '\n'  shift, and go to state 71
+
+
+State 25
+
+   19 integer: UNIT HUNDRED •
+   20        | UNIT HUNDRED • integer
 
     UNIT  shift, and go to state 1
     TEEN  shift, and go to state 2
     TEN   shift, and go to state 3
 
-    $default  reduce using rule 17 (integer)
+    $default  reduce using rule 19 (integer)
 
-    integer  go to state 66
-
-
-State 24
-
-   16 integer: TEN UNIT •
-
-    $default  reduce using rule 16 (integer)
-
-
-State 25
-
-   28 expr: NEG • expr
-
-    UNIT    shift, and go to state 1
-    TEEN    shift, and go to state 2
-    TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
-
-    number   go to state 29
-    integer  go to state 17
-    expr     go to state 67
+    integer  go to state 72
 
 
 State 26
 
-   29 expr: MINUS • expr
+   18 integer: TEN UNIT •
 
-    UNIT    shift, and go to state 1
-    TEEN    shift, and go to state 2
-    TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
-
-    number   go to state 29
-    integer  go to state 17
-    expr     go to state 68
+    $default  reduce using rule 18 (integer)
 
 
 State 27
 
-   31 expr: LPAREN • expr RPAREN
+   30 expr: NEG • expr
 
     UNIT    shift, and go to state 1
     TEEN    shift, and go to state 2
     TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
 
-    number   go to state 29
+    number   go to state 31
     integer  go to state 17
-    expr     go to state 69
+    expr     go to state 73
 
 
 State 28
 
-   32 expr: ID •
+   31 expr: MINUS • expr
 
-    $default  reduce using rule 32 (expr)
+    UNIT    shift, and go to state 1
+    TEEN    shift, and go to state 2
+    TEN     shift, and go to state 3
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
+
+    number   go to state 31
+    integer  go to state 17
+    expr     go to state 74
 
 
 State 29
 
-   22 expr: number •
+   33 expr: LPAREN • expr RPAREN
 
-    $default  reduce using rule 22 (expr)
+    UNIT    shift, and go to state 1
+    TEEN    shift, and go to state 2
+    TEN     shift, and go to state 3
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
+
+    number   go to state 31
+    integer  go to state 17
+    expr     go to state 75
 
 
 State 30
 
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   28     | NEG expr •
-   30     | expr • EXP expr
-   46 quantity: NEG expr • MEASURE
+   34 expr: ID •
 
-    EXP      shift, and go to state 49
-    FACT     shift, and go to state 70
-    MEASURE  shift, and go to state 73
-
-    $default  reduce using rule 28 (expr)
+    $default  reduce using rule 34 (expr)
 
 
 State 31
 
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   29     | MINUS expr •
-   30     | expr • EXP expr
-   47 quantity: MINUS expr • MEASURE
+   24 expr: number •
 
-    EXP      shift, and go to state 49
-    FACT     shift, and go to state 70
-    MEASURE  shift, and go to state 74
-
-    $default  reduce using rule 29 (expr)
+    $default  reduce using rule 24 (expr)
 
 
 State 32
 
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-   31     | LPAREN expr • RPAREN
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   30     | NEG expr •
+   32     | expr • EXP expr
+   46 quantity: NEG expr • MEASURE
+
+    EXP      shift, and go to state 53
+    FACT     shift, and go to state 76
+    MEASURE  shift, and go to state 79
+
+    $default  reduce using rule 30 (expr)
+
+
+State 33
+
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   31     | MINUS expr •
+   32     | expr • EXP expr
+   47 quantity: MINUS expr • MEASURE
+
+    EXP      shift, and go to state 53
+    FACT     shift, and go to state 76
+    MEASURE  shift, and go to state 80
+
+    $default  reduce using rule 31 (expr)
+
+
+State 34
+
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   33     | LPAREN expr • RPAREN
    41 quantity: expr • TIMES quantity
    42         | expr • DIVIDE quantity
    45         | expr • FACT MEASURE
 
-    EXP     shift, and go to state 49
-    FACT    shift, and go to state 50
-    PLUS    shift, and go to state 51
-    MINUS   shift, and go to state 52
-    TIMES   shift, and go to state 53
-    DIVIDE  shift, and go to state 54
-    RPAREN  shift, and go to state 75
+    EXP     shift, and go to state 53
+    FACT    shift, and go to state 54
+    PLUS    shift, and go to state 55
+    MINUS   shift, and go to state 56
+    TIMES   shift, and go to state 57
+    DIVIDE  shift, and go to state 58
+    RPAREN  shift, and go to state 81
 
 
-State 33
+State 35
 
    36 quantity: quantity • PLUS quantity
    37         | quantity • MINUS quantity
@@ -616,164 +637,165 @@ State 33
    40         | quantity • EXP expr
    43         | quantity • TIMES expr
    44         | quantity • DIVIDE expr
-   48         | LPAREN quantity • RPAREN
+   50 parenquantity: LPAREN quantity • RPAREN
 
-    EXP     shift, and go to state 57
-    PLUS    shift, and go to state 58
-    MINUS   shift, and go to state 59
-    TIMES   shift, and go to state 60
-    DIVIDE  shift, and go to state 61
-    RPAREN  shift, and go to state 76
-
-
-State 34
-
-   34 expr: IF LPAREN • boolexpr RPAREN expr ELSE expr
-
-    UNIT     shift, and go to state 1
-    TEEN     shift, and go to state 2
-    TEN      shift, and go to state 3
-    NEG      shift, and go to state 25
-    MINUS    shift, and go to state 26
-    LPAREN   shift, and go to state 27
-    IF       shift, and go to state 7
-    WHILE    shift, and go to state 8
-    ID       shift, and go to state 28
-    BOOLEAN  shift, and go to state 10
-    BOOL_ID  shift, and go to state 77
-
-    number    go to state 29
-    integer   go to state 17
-    expr      go to state 78
-    boolexpr  go to state 79
-
-
-State 35
-
-   33 expr: WHILE LPAREN • boolexpr RPAREN expr
-
-    UNIT     shift, and go to state 1
-    TEEN     shift, and go to state 2
-    TEN      shift, and go to state 3
-    NEG      shift, and go to state 25
-    MINUS    shift, and go to state 26
-    LPAREN   shift, and go to state 27
-    IF       shift, and go to state 7
-    WHILE    shift, and go to state 8
-    ID       shift, and go to state 28
-    BOOLEAN  shift, and go to state 10
-    BOOL_ID  shift, and go to state 77
-
-    number    go to state 29
-    integer   go to state 17
-    expr      go to state 78
-    boolexpr  go to state 80
+    EXP     shift, and go to state 61
+    PLUS    shift, and go to state 62
+    MINUS   shift, and go to state 63
+    TIMES   shift, and go to state 64
+    DIVIDE  shift, and go to state 65
+    RPAREN  shift, and go to state 82
 
 
 State 36
 
-   49 assignment: ID ASSIGN • expr
-   51           | ID ASSIGN • boolexpr
+   48 quantity: LPAREN parenquantity • RPAREN
+   49         | parenquantity • EXP expr
 
-    UNIT     shift, and go to state 1
-    TEEN     shift, and go to state 2
-    TEN      shift, and go to state 3
-    NEG      shift, and go to state 25
-    MINUS    shift, and go to state 26
-    LPAREN   shift, and go to state 27
-    IF       shift, and go to state 7
-    WHILE    shift, and go to state 8
-    ID       shift, and go to state 28
-    BOOLEAN  shift, and go to state 10
-    BOOL_ID  shift, and go to state 77
-
-    number    go to state 29
-    integer   go to state 17
-    expr      go to state 81
-    boolexpr  go to state 82
+    EXP     shift, and go to state 67
+    RPAREN  shift, and go to state 83
 
 
 State 37
 
-   50 assignment: BOOL_ID ASSIGN • boolexpr
-   52           | BOOL_ID ASSIGN • expr
+   62 statements: IF LPAREN • boolexpr RPAREN expr ELSE expr
 
     UNIT     shift, and go to state 1
     TEEN     shift, and go to state 2
     TEN      shift, and go to state 3
-    NEG      shift, and go to state 25
-    MINUS    shift, and go to state 26
-    LPAREN   shift, and go to state 27
-    IF       shift, and go to state 7
-    WHILE    shift, and go to state 8
-    ID       shift, and go to state 28
+    NEG      shift, and go to state 27
+    MINUS    shift, and go to state 28
+    LPAREN   shift, and go to state 29
+    ID       shift, and go to state 30
     BOOLEAN  shift, and go to state 10
-    BOOL_ID  shift, and go to state 77
+    BOOL_ID  shift, and go to state 84
 
-    number    go to state 29
+    number    go to state 31
     integer   go to state 17
-    expr      go to state 83
-    boolexpr  go to state 84
+    expr      go to state 85
+    boolexpr  go to state 86
 
 
 State 38
 
-   53 insertation: INT ID • ASSIGN expr
-   56            | INT ID • ASSIGN boolexpr
+   61 statements: WHILE LPAREN • boolexpr RPAREN expr
 
-    ASSIGN  shift, and go to state 85
+    UNIT     shift, and go to state 1
+    TEEN     shift, and go to state 2
+    TEN      shift, and go to state 3
+    NEG      shift, and go to state 27
+    MINUS    shift, and go to state 28
+    LPAREN   shift, and go to state 29
+    ID       shift, and go to state 30
+    BOOLEAN  shift, and go to state 10
+    BOOL_ID  shift, and go to state 84
+
+    number    go to state 31
+    integer   go to state 17
+    expr      go to state 85
+    boolexpr  go to state 87
 
 
 State 39
 
-   54 insertation: DOU ID • ASSIGN expr
-   57            | DOU ID • ASSIGN boolexpr
+   51 assignment: ID ASSIGN • expr
+   53           | ID ASSIGN • boolexpr
 
-    ASSIGN  shift, and go to state 86
+    UNIT     shift, and go to state 1
+    TEEN     shift, and go to state 2
+    TEN      shift, and go to state 3
+    NEG      shift, and go to state 27
+    MINUS    shift, and go to state 28
+    LPAREN   shift, and go to state 29
+    ID       shift, and go to state 30
+    BOOLEAN  shift, and go to state 10
+    BOOL_ID  shift, and go to state 84
+
+    number    go to state 31
+    integer   go to state 17
+    expr      go to state 88
+    boolexpr  go to state 89
 
 
 State 40
 
-   55 insertation: BOOL BOOL_ID • ASSIGN boolexpr
-   58            | BOOL BOOL_ID • ASSIGN expr
+   52 assignment: BOOL_ID ASSIGN • boolexpr
+   54           | BOOL_ID ASSIGN • expr
 
-    ASSIGN  shift, and go to state 87
+    UNIT     shift, and go to state 1
+    TEEN     shift, and go to state 2
+    TEN      shift, and go to state 3
+    NEG      shift, and go to state 27
+    MINUS    shift, and go to state 28
+    LPAREN   shift, and go to state 29
+    ID       shift, and go to state 30
+    BOOLEAN  shift, and go to state 10
+    BOOL_ID  shift, and go to state 84
+
+    number    go to state 31
+    integer   go to state 17
+    expr      go to state 90
+    boolexpr  go to state 91
 
 
 State 41
+
+   55 insertation: INT ID • ASSIGN expr
+   58            | INT ID • ASSIGN boolexpr
+
+    ASSIGN  shift, and go to state 92
+
+
+State 42
+
+   56 insertation: DOU ID • ASSIGN expr
+   59            | DOU ID • ASSIGN boolexpr
+
+    ASSIGN  shift, and go to state 93
+
+
+State 43
+
+   57 insertation: BOOL BOOL_ID • ASSIGN boolexpr
+   60            | BOOL BOOL_ID • ASSIGN expr
+
+    ASSIGN  shift, and go to state 94
+
+
+State 44
 
     0 $accept: line $end •
 
     $default  accept
 
 
-State 42
+State 45
 
-    6 line: line expr • '\n'
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
+    8 line: line expr • '\n'
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
    41 quantity: expr • TIMES quantity
    42         | expr • DIVIDE quantity
    45         | expr • FACT MEASURE
-   61 boolexpr: expr • RELATION expr
+   65 boolexpr: expr • RELATION expr
 
-    EXP       shift, and go to state 49
-    FACT      shift, and go to state 50
-    PLUS      shift, and go to state 51
-    MINUS     shift, and go to state 52
-    TIMES     shift, and go to state 53
-    DIVIDE    shift, and go to state 54
-    RELATION  shift, and go to state 55
-    '\n'      shift, and go to state 88
+    EXP       shift, and go to state 53
+    FACT      shift, and go to state 54
+    PLUS      shift, and go to state 55
+    MINUS     shift, and go to state 56
+    TIMES     shift, and go to state 57
+    DIVIDE    shift, and go to state 58
+    RELATION  shift, and go to state 59
+    '\n'      shift, and go to state 95
 
 
-State 43
+State 46
 
-    8 line: line quantity • '\n'
+   10 line: line quantity • '\n'
    36 quantity: quantity • PLUS quantity
    37         | quantity • MINUS quantity
    38         | quantity • TIMES quantity
@@ -782,121 +804,122 @@ State 43
    43         | quantity • TIMES expr
    44         | quantity • DIVIDE expr
 
-    EXP     shift, and go to state 57
-    PLUS    shift, and go to state 58
-    MINUS   shift, and go to state 59
-    TIMES   shift, and go to state 60
-    DIVIDE  shift, and go to state 61
-    '\n'    shift, and go to state 89
-
-
-State 44
-
-    2 line: line assignment • '\n'
-
-    '\n'  shift, and go to state 90
-
-
-State 45
-
-    4 line: line insertation • '\n'
-
-    '\n'  shift, and go to state 91
-
-
-State 46
-
-   10 line: line boolexpr • '\n'
-
-    '\n'  shift, and go to state 92
+    EXP     shift, and go to state 61
+    PLUS    shift, and go to state 62
+    MINUS   shift, and go to state 63
+    TIMES   shift, and go to state 64
+    DIVIDE  shift, and go to state 65
+    '\n'    shift, and go to state 96
 
 
 State 47
+
+    2 line: line assignment • '\n'
+
+    '\n'  shift, and go to state 97
+
+
+State 48
+
+    4 line: line insertation • '\n'
+
+    '\n'  shift, and go to state 98
+
+
+State 49
+
+    6 line: line statements • '\n'
+
+    '\n'  shift, and go to state 99
+
+
+State 50
+
+   12 line: line boolexpr • '\n'
+
+    '\n'  shift, and go to state 100
+
+
+State 51
 
    35 quantity: number MEASURE •
 
     $default  reduce using rule 35 (quantity)
 
 
-State 48
-
-   12 number: integer POINT • fraction
-
-    UNIT  shift, and go to state 93
-
-    fraction  go to state 94
-
-
-State 49
-
-   30 expr: expr EXP • expr
-
-    UNIT    shift, and go to state 1
-    TEEN    shift, and go to state 2
-    TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
-
-    number   go to state 29
-    integer  go to state 17
-    expr     go to state 95
-
-
-State 50
-
-   27 expr: expr FACT •
-   45 quantity: expr FACT • MEASURE
-
-    MEASURE  shift, and go to state 96
-
-    $default  reduce using rule 27 (expr)
-
-
-State 51
-
-   23 expr: expr PLUS • expr
-
-    UNIT    shift, and go to state 1
-    TEEN    shift, and go to state 2
-    TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
-
-    number   go to state 29
-    integer  go to state 17
-    expr     go to state 97
-
-
 State 52
 
-   24 expr: expr MINUS • expr
+   14 number: integer POINT • fraction
 
-    UNIT    shift, and go to state 1
-    TEEN    shift, and go to state 2
-    TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    UNIT  shift, and go to state 101
 
-    number   go to state 29
-    integer  go to state 17
-    expr     go to state 98
+    fraction  go to state 102
 
 
 State 53
 
-   25 expr: expr TIMES • expr
+   32 expr: expr EXP • expr
+
+    UNIT    shift, and go to state 1
+    TEEN    shift, and go to state 2
+    TEN     shift, and go to state 3
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
+
+    number   go to state 31
+    integer  go to state 17
+    expr     go to state 103
+
+
+State 54
+
+   29 expr: expr FACT •
+   45 quantity: expr FACT • MEASURE
+
+    MEASURE  shift, and go to state 104
+
+    $default  reduce using rule 29 (expr)
+
+
+State 55
+
+   25 expr: expr PLUS • expr
+
+    UNIT    shift, and go to state 1
+    TEEN    shift, and go to state 2
+    TEN     shift, and go to state 3
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
+
+    number   go to state 31
+    integer  go to state 17
+    expr     go to state 105
+
+
+State 56
+
+   26 expr: expr MINUS • expr
+
+    UNIT    shift, and go to state 1
+    TEEN    shift, and go to state 2
+    TEN     shift, and go to state 3
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
+
+    number   go to state 31
+    integer  go to state 17
+    expr     go to state 106
+
+
+State 57
+
+   27 expr: expr TIMES • expr
    41 quantity: expr TIMES • quantity
 
     UNIT    shift, and go to state 1
@@ -905,19 +928,18 @@ State 53
     NEG     shift, and go to state 4
     MINUS   shift, and go to state 5
     LPAREN  shift, and go to state 6
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    ID      shift, and go to state 30
 
-    number    go to state 16
-    integer   go to state 17
-    expr      go to state 99
-    quantity  go to state 100
+    number         go to state 16
+    integer        go to state 17
+    expr           go to state 107
+    quantity       go to state 108
+    parenquantity  go to state 20
 
 
-State 54
+State 58
 
-   26 expr: expr DIVIDE • expr
+   28 expr: expr DIVIDE • expr
    42 quantity: expr DIVIDE • quantity
 
     UNIT    shift, and go to state 1
@@ -926,62 +948,57 @@ State 54
     NEG     shift, and go to state 4
     MINUS   shift, and go to state 5
     LPAREN  shift, and go to state 6
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    ID      shift, and go to state 30
 
-    number    go to state 16
-    integer   go to state 17
-    expr      go to state 101
-    quantity  go to state 102
+    number         go to state 16
+    integer        go to state 17
+    expr           go to state 109
+    quantity       go to state 110
+    parenquantity  go to state 20
 
 
-State 55
+State 59
 
-   61 boolexpr: expr RELATION • expr
+   65 boolexpr: expr RELATION • expr
 
     UNIT    shift, and go to state 1
     TEEN    shift, and go to state 2
     TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
 
-    number   go to state 29
+    number   go to state 31
     integer  go to state 17
-    expr     go to state 103
+    expr     go to state 111
 
 
-State 56
+State 60
 
-    5 line: expr '\n' •
+    7 line: expr '\n' •
 
-    $default  reduce using rule 5 (line)
+    $default  reduce using rule 7 (line)
 
 
-State 57
+State 61
 
    40 quantity: quantity EXP • expr
 
     UNIT    shift, and go to state 1
     TEEN    shift, and go to state 2
     TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
 
-    number   go to state 29
+    number   go to state 31
     integer  go to state 17
-    expr     go to state 104
+    expr     go to state 112
 
 
-State 58
+State 62
 
    36 quantity: quantity PLUS • quantity
 
@@ -991,17 +1008,16 @@ State 58
     NEG     shift, and go to state 4
     MINUS   shift, and go to state 5
     LPAREN  shift, and go to state 6
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    ID      shift, and go to state 30
 
-    number    go to state 16
-    integer   go to state 17
-    expr      go to state 105
-    quantity  go to state 106
+    number         go to state 16
+    integer        go to state 17
+    expr           go to state 113
+    quantity       go to state 114
+    parenquantity  go to state 20
 
 
-State 59
+State 63
 
    37 quantity: quantity MINUS • quantity
 
@@ -1011,17 +1027,16 @@ State 59
     NEG     shift, and go to state 4
     MINUS   shift, and go to state 5
     LPAREN  shift, and go to state 6
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    ID      shift, and go to state 30
 
-    number    go to state 16
-    integer   go to state 17
-    expr      go to state 105
-    quantity  go to state 107
+    number         go to state 16
+    integer        go to state 17
+    expr           go to state 113
+    quantity       go to state 115
+    parenquantity  go to state 20
 
 
-State 60
+State 64
 
    38 quantity: quantity TIMES • quantity
    43         | quantity TIMES • expr
@@ -1032,17 +1047,16 @@ State 60
     NEG     shift, and go to state 4
     MINUS   shift, and go to state 5
     LPAREN  shift, and go to state 6
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    ID      shift, and go to state 30
 
-    number    go to state 16
-    integer   go to state 17
-    expr      go to state 108
-    quantity  go to state 109
+    number         go to state 16
+    integer        go to state 17
+    expr           go to state 116
+    quantity       go to state 117
+    parenquantity  go to state 20
 
 
-State 61
+State 65
 
    39 quantity: quantity DIVIDE • quantity
    44         | quantity DIVIDE • expr
@@ -1053,474 +1067,501 @@ State 61
     NEG     shift, and go to state 4
     MINUS   shift, and go to state 5
     LPAREN  shift, and go to state 6
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    ID      shift, and go to state 30
 
-    number    go to state 16
-    integer   go to state 17
-    expr      go to state 110
-    quantity  go to state 111
-
-
-State 62
-
-    7 line: quantity '\n' •
-
-    $default  reduce using rule 7 (line)
+    number         go to state 16
+    integer        go to state 17
+    expr           go to state 118
+    quantity       go to state 119
+    parenquantity  go to state 20
 
 
-State 63
+State 66
+
+    9 line: quantity '\n' •
+
+    $default  reduce using rule 9 (line)
+
+
+State 67
+
+   49 quantity: parenquantity EXP • expr
+
+    UNIT    shift, and go to state 1
+    TEEN    shift, and go to state 2
+    TEN     shift, and go to state 3
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
+
+    number   go to state 31
+    integer  go to state 17
+    expr     go to state 120
+
+
+State 68
 
     1 line: assignment '\n' •
 
     $default  reduce using rule 1 (line)
 
 
-State 64
+State 69
 
     3 line: insertation '\n' •
 
     $default  reduce using rule 3 (line)
 
 
-State 65
-
-    9 line: boolexpr '\n' •
-
-    $default  reduce using rule 9 (line)
-
-
-State 66
-
-   18 integer: UNIT HUNDRED integer •
-
-    $default  reduce using rule 18 (integer)
-
-
-State 67
-
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   28     | NEG expr •
-   30     | expr • EXP expr
-
-    EXP   shift, and go to state 49
-    FACT  shift, and go to state 70
-
-    $default  reduce using rule 28 (expr)
-
-
-State 68
-
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   29     | MINUS expr •
-   30     | expr • EXP expr
-
-    EXP   shift, and go to state 49
-    FACT  shift, and go to state 70
-
-    $default  reduce using rule 29 (expr)
-
-
-State 69
-
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-   31     | LPAREN expr • RPAREN
-
-    EXP     shift, and go to state 49
-    FACT    shift, and go to state 70
-    PLUS    shift, and go to state 51
-    MINUS   shift, and go to state 52
-    TIMES   shift, and go to state 71
-    DIVIDE  shift, and go to state 72
-    RPAREN  shift, and go to state 75
-
-
 State 70
 
-   27 expr: expr FACT •
+    5 line: statements '\n' •
 
-    $default  reduce using rule 27 (expr)
+    $default  reduce using rule 5 (line)
 
 
 State 71
 
-   25 expr: expr TIMES • expr
+   11 line: boolexpr '\n' •
 
-    UNIT    shift, and go to state 1
-    TEEN    shift, and go to state 2
-    TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
-
-    number   go to state 29
-    integer  go to state 17
-    expr     go to state 112
+    $default  reduce using rule 11 (line)
 
 
 State 72
 
-   26 expr: expr DIVIDE • expr
+   20 integer: UNIT HUNDRED integer •
+
+    $default  reduce using rule 20 (integer)
+
+
+State 73
+
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   30     | NEG expr •
+   32     | expr • EXP expr
+
+    EXP   shift, and go to state 53
+    FACT  shift, and go to state 76
+
+    $default  reduce using rule 30 (expr)
+
+
+State 74
+
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   31     | MINUS expr •
+   32     | expr • EXP expr
+
+    EXP   shift, and go to state 53
+    FACT  shift, and go to state 76
+
+    $default  reduce using rule 31 (expr)
+
+
+State 75
+
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   33     | LPAREN expr • RPAREN
+
+    EXP     shift, and go to state 53
+    FACT    shift, and go to state 76
+    PLUS    shift, and go to state 55
+    MINUS   shift, and go to state 56
+    TIMES   shift, and go to state 77
+    DIVIDE  shift, and go to state 78
+    RPAREN  shift, and go to state 81
+
+
+State 76
+
+   29 expr: expr FACT •
+
+    $default  reduce using rule 29 (expr)
+
+
+State 77
+
+   27 expr: expr TIMES • expr
 
     UNIT    shift, and go to state 1
     TEEN    shift, and go to state 2
     TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
 
-    number   go to state 29
+    number   go to state 31
     integer  go to state 17
-    expr     go to state 113
+    expr     go to state 121
 
 
-State 73
+State 78
+
+   28 expr: expr DIVIDE • expr
+
+    UNIT    shift, and go to state 1
+    TEEN    shift, and go to state 2
+    TEN     shift, and go to state 3
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
+
+    number   go to state 31
+    integer  go to state 17
+    expr     go to state 122
+
+
+State 79
 
    46 quantity: NEG expr MEASURE •
 
     $default  reduce using rule 46 (quantity)
 
 
-State 74
+State 80
 
    47 quantity: MINUS expr MEASURE •
 
     $default  reduce using rule 47 (quantity)
 
 
-State 75
-
-   31 expr: LPAREN expr RPAREN •
-
-    $default  reduce using rule 31 (expr)
-
-
-State 76
-
-   48 quantity: LPAREN quantity RPAREN •
-
-    $default  reduce using rule 48 (quantity)
-
-
-State 77
-
-   60 boolexpr: BOOL_ID •
-
-    $default  reduce using rule 60 (boolexpr)
-
-
-State 78
-
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-   61 boolexpr: expr • RELATION expr
-
-    EXP       shift, and go to state 49
-    FACT      shift, and go to state 70
-    PLUS      shift, and go to state 51
-    MINUS     shift, and go to state 52
-    TIMES     shift, and go to state 71
-    DIVIDE    shift, and go to state 72
-    RELATION  shift, and go to state 55
-
-
-State 79
-
-   34 expr: IF LPAREN boolexpr • RPAREN expr ELSE expr
-
-    RPAREN  shift, and go to state 114
-
-
-State 80
-
-   33 expr: WHILE LPAREN boolexpr • RPAREN expr
-
-    RPAREN  shift, and go to state 115
-
-
 State 81
 
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-   49 assignment: ID ASSIGN expr •
-   61 boolexpr: expr • RELATION expr
+   33 expr: LPAREN expr RPAREN •
 
-    EXP       shift, and go to state 49
-    FACT      shift, and go to state 70
-    PLUS      shift, and go to state 51
-    MINUS     shift, and go to state 52
-    TIMES     shift, and go to state 71
-    DIVIDE    shift, and go to state 72
-    RELATION  shift, and go to state 55
-
-    $default  reduce using rule 49 (assignment)
+    $default  reduce using rule 33 (expr)
 
 
 State 82
 
-   51 assignment: ID ASSIGN boolexpr •
+   50 parenquantity: LPAREN quantity RPAREN •
 
-    $default  reduce using rule 51 (assignment)
+    $default  reduce using rule 50 (parenquantity)
 
 
 State 83
 
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-   52 assignment: BOOL_ID ASSIGN expr •
-   61 boolexpr: expr • RELATION expr
+   48 quantity: LPAREN parenquantity RPAREN •
 
-    EXP       shift, and go to state 49
-    FACT      shift, and go to state 70
-    PLUS      shift, and go to state 51
-    MINUS     shift, and go to state 52
-    TIMES     shift, and go to state 71
-    DIVIDE    shift, and go to state 72
-    RELATION  shift, and go to state 55
-
-    $default  reduce using rule 52 (assignment)
+    $default  reduce using rule 48 (quantity)
 
 
 State 84
 
-   50 assignment: BOOL_ID ASSIGN boolexpr •
+   64 boolexpr: BOOL_ID •
 
-    $default  reduce using rule 50 (assignment)
+    $default  reduce using rule 64 (boolexpr)
 
 
 State 85
 
-   53 insertation: INT ID ASSIGN • expr
-   56            | INT ID ASSIGN • boolexpr
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   65 boolexpr: expr • RELATION expr
 
-    UNIT     shift, and go to state 1
-    TEEN     shift, and go to state 2
-    TEN      shift, and go to state 3
-    NEG      shift, and go to state 25
-    MINUS    shift, and go to state 26
-    LPAREN   shift, and go to state 27
-    IF       shift, and go to state 7
-    WHILE    shift, and go to state 8
-    ID       shift, and go to state 28
-    BOOLEAN  shift, and go to state 10
-    BOOL_ID  shift, and go to state 77
-
-    number    go to state 29
-    integer   go to state 17
-    expr      go to state 116
-    boolexpr  go to state 117
+    EXP       shift, and go to state 53
+    FACT      shift, and go to state 76
+    PLUS      shift, and go to state 55
+    MINUS     shift, and go to state 56
+    TIMES     shift, and go to state 77
+    DIVIDE    shift, and go to state 78
+    RELATION  shift, and go to state 59
 
 
 State 86
 
-   54 insertation: DOU ID ASSIGN • expr
-   57            | DOU ID ASSIGN • boolexpr
+   62 statements: IF LPAREN boolexpr • RPAREN expr ELSE expr
 
-    UNIT     shift, and go to state 1
-    TEEN     shift, and go to state 2
-    TEN      shift, and go to state 3
-    NEG      shift, and go to state 25
-    MINUS    shift, and go to state 26
-    LPAREN   shift, and go to state 27
-    IF       shift, and go to state 7
-    WHILE    shift, and go to state 8
-    ID       shift, and go to state 28
-    BOOLEAN  shift, and go to state 10
-    BOOL_ID  shift, and go to state 77
-
-    number    go to state 29
-    integer   go to state 17
-    expr      go to state 118
-    boolexpr  go to state 119
+    RPAREN  shift, and go to state 123
 
 
 State 87
 
-   55 insertation: BOOL BOOL_ID ASSIGN • boolexpr
-   58            | BOOL BOOL_ID ASSIGN • expr
+   61 statements: WHILE LPAREN boolexpr • RPAREN expr
 
-    UNIT     shift, and go to state 1
-    TEEN     shift, and go to state 2
-    TEN      shift, and go to state 3
-    NEG      shift, and go to state 25
-    MINUS    shift, and go to state 26
-    LPAREN   shift, and go to state 27
-    IF       shift, and go to state 7
-    WHILE    shift, and go to state 8
-    ID       shift, and go to state 28
-    BOOLEAN  shift, and go to state 10
-    BOOL_ID  shift, and go to state 77
-
-    number    go to state 29
-    integer   go to state 17
-    expr      go to state 120
-    boolexpr  go to state 121
+    RPAREN  shift, and go to state 124
 
 
 State 88
 
-    6 line: line expr '\n' •
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   51 assignment: ID ASSIGN expr •
+   65 boolexpr: expr • RELATION expr
 
-    $default  reduce using rule 6 (line)
+    EXP       shift, and go to state 53
+    FACT      shift, and go to state 76
+    PLUS      shift, and go to state 55
+    MINUS     shift, and go to state 56
+    TIMES     shift, and go to state 77
+    DIVIDE    shift, and go to state 78
+    RELATION  shift, and go to state 59
+
+    $default  reduce using rule 51 (assignment)
 
 
 State 89
 
-    8 line: line quantity '\n' •
+   53 assignment: ID ASSIGN boolexpr •
+
+    $default  reduce using rule 53 (assignment)
+
+
+State 90
+
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   54 assignment: BOOL_ID ASSIGN expr •
+   65 boolexpr: expr • RELATION expr
+
+    EXP       shift, and go to state 53
+    FACT      shift, and go to state 76
+    PLUS      shift, and go to state 55
+    MINUS     shift, and go to state 56
+    TIMES     shift, and go to state 77
+    DIVIDE    shift, and go to state 78
+    RELATION  shift, and go to state 59
+
+    $default  reduce using rule 54 (assignment)
+
+
+State 91
+
+   52 assignment: BOOL_ID ASSIGN boolexpr •
+
+    $default  reduce using rule 52 (assignment)
+
+
+State 92
+
+   55 insertation: INT ID ASSIGN • expr
+   58            | INT ID ASSIGN • boolexpr
+
+    UNIT     shift, and go to state 1
+    TEEN     shift, and go to state 2
+    TEN      shift, and go to state 3
+    NEG      shift, and go to state 27
+    MINUS    shift, and go to state 28
+    LPAREN   shift, and go to state 29
+    ID       shift, and go to state 30
+    BOOLEAN  shift, and go to state 10
+    BOOL_ID  shift, and go to state 84
+
+    number    go to state 31
+    integer   go to state 17
+    expr      go to state 125
+    boolexpr  go to state 126
+
+
+State 93
+
+   56 insertation: DOU ID ASSIGN • expr
+   59            | DOU ID ASSIGN • boolexpr
+
+    UNIT     shift, and go to state 1
+    TEEN     shift, and go to state 2
+    TEN      shift, and go to state 3
+    NEG      shift, and go to state 27
+    MINUS    shift, and go to state 28
+    LPAREN   shift, and go to state 29
+    ID       shift, and go to state 30
+    BOOLEAN  shift, and go to state 10
+    BOOL_ID  shift, and go to state 84
+
+    number    go to state 31
+    integer   go to state 17
+    expr      go to state 127
+    boolexpr  go to state 128
+
+
+State 94
+
+   57 insertation: BOOL BOOL_ID ASSIGN • boolexpr
+   60            | BOOL BOOL_ID ASSIGN • expr
+
+    UNIT     shift, and go to state 1
+    TEEN     shift, and go to state 2
+    TEN      shift, and go to state 3
+    NEG      shift, and go to state 27
+    MINUS    shift, and go to state 28
+    LPAREN   shift, and go to state 29
+    ID       shift, and go to state 30
+    BOOLEAN  shift, and go to state 10
+    BOOL_ID  shift, and go to state 84
+
+    number    go to state 31
+    integer   go to state 17
+    expr      go to state 129
+    boolexpr  go to state 130
+
+
+State 95
+
+    8 line: line expr '\n' •
 
     $default  reduce using rule 8 (line)
 
 
-State 90
+State 96
+
+   10 line: line quantity '\n' •
+
+    $default  reduce using rule 10 (line)
+
+
+State 97
 
     2 line: line assignment '\n' •
 
     $default  reduce using rule 2 (line)
 
 
-State 91
+State 98
 
     4 line: line insertation '\n' •
 
     $default  reduce using rule 4 (line)
 
 
-State 92
+State 99
 
-   10 line: line boolexpr '\n' •
+    6 line: line statements '\n' •
 
-    $default  reduce using rule 10 (line)
-
-
-State 93
-
-   19 fraction: UNIT •
-   20         | UNIT • UNIT
-   21         | UNIT • UNIT UNIT
-
-    UNIT  shift, and go to state 122
-
-    $default  reduce using rule 19 (fraction)
+    $default  reduce using rule 6 (line)
 
 
-State 94
+State 100
 
-   12 number: integer POINT fraction •
+   12 line: line boolexpr '\n' •
 
-    $default  reduce using rule 12 (number)
-
-
-State 95
-
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-   30     | expr EXP expr •
-
-    EXP   shift, and go to state 49
-    FACT  shift, and go to state 70
-
-    $default  reduce using rule 30 (expr)
+    $default  reduce using rule 12 (line)
 
 
-State 96
+State 101
+
+   21 fraction: UNIT •
+   22         | UNIT • UNIT
+   23         | UNIT • UNIT UNIT
+
+    UNIT  shift, and go to state 131
+
+    $default  reduce using rule 21 (fraction)
+
+
+State 102
+
+   14 number: integer POINT fraction •
+
+    $default  reduce using rule 14 (number)
+
+
+State 103
+
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   32     | expr EXP expr •
+
+    EXP   shift, and go to state 53
+    FACT  shift, and go to state 76
+
+    $default  reduce using rule 32 (expr)
+
+
+State 104
 
    45 quantity: expr FACT MEASURE •
 
     $default  reduce using rule 45 (quantity)
 
 
-State 97
+State 105
 
-   23 expr: expr • PLUS expr
-   23     | expr PLUS expr •
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
+   25 expr: expr • PLUS expr
+   25     | expr PLUS expr •
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
 
-    EXP     shift, and go to state 49
-    FACT    shift, and go to state 70
-    TIMES   shift, and go to state 71
-    DIVIDE  shift, and go to state 72
-
-    $default  reduce using rule 23 (expr)
-
-
-State 98
-
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   24     | expr MINUS expr •
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-
-    EXP     shift, and go to state 49
-    FACT    shift, and go to state 70
-    TIMES   shift, and go to state 71
-    DIVIDE  shift, and go to state 72
-
-    $default  reduce using rule 24 (expr)
-
-
-State 99
-
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   25     | expr TIMES expr •
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-   41 quantity: expr • TIMES quantity
-   42         | expr • DIVIDE quantity
-   45         | expr • FACT MEASURE
-
-    EXP   shift, and go to state 49
-    FACT  shift, and go to state 50
+    EXP     shift, and go to state 53
+    FACT    shift, and go to state 76
+    TIMES   shift, and go to state 77
+    DIVIDE  shift, and go to state 78
 
     $default  reduce using rule 25 (expr)
 
 
-State 100
+State 106
+
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   26     | expr MINUS expr •
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+
+    EXP     shift, and go to state 53
+    FACT    shift, and go to state 76
+    TIMES   shift, and go to state 77
+    DIVIDE  shift, and go to state 78
+
+    $default  reduce using rule 26 (expr)
+
+
+State 107
+
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   27     | expr TIMES expr •
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   41 quantity: expr • TIMES quantity
+   42         | expr • DIVIDE quantity
+   45         | expr • FACT MEASURE
+
+    EXP   shift, and go to state 53
+    FACT  shift, and go to state 54
+
+    $default  reduce using rule 27 (expr)
+
+
+State 108
 
    36 quantity: quantity • PLUS quantity
    37         | quantity • MINUS quantity
@@ -1531,31 +1572,31 @@ State 100
    43         | quantity • TIMES expr
    44         | quantity • DIVIDE expr
 
-    EXP  shift, and go to state 57
+    EXP  shift, and go to state 61
 
     $default  reduce using rule 41 (quantity)
 
 
-State 101
+State 109
 
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   26     | expr DIVIDE expr •
-   27     | expr • FACT
-   30     | expr • EXP expr
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   28     | expr DIVIDE expr •
+   29     | expr • FACT
+   32     | expr • EXP expr
    41 quantity: expr • TIMES quantity
    42         | expr • DIVIDE quantity
    45         | expr • FACT MEASURE
 
-    EXP   shift, and go to state 49
-    FACT  shift, and go to state 50
+    EXP   shift, and go to state 53
+    FACT  shift, and go to state 54
 
-    $default  reduce using rule 26 (expr)
+    $default  reduce using rule 28 (expr)
 
 
-State 102
+State 110
 
    36 quantity: quantity • PLUS quantity
    37         | quantity • MINUS quantity
@@ -1566,68 +1607,68 @@ State 102
    43         | quantity • TIMES expr
    44         | quantity • DIVIDE expr
 
-    EXP  shift, and go to state 57
+    EXP  shift, and go to state 61
 
     $default  reduce using rule 42 (quantity)
 
 
-State 103
+State 111
 
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-   61 boolexpr: expr RELATION expr •
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   65 boolexpr: expr RELATION expr •
 
-    EXP     shift, and go to state 49
-    FACT    shift, and go to state 70
-    PLUS    shift, and go to state 51
-    MINUS   shift, and go to state 52
-    TIMES   shift, and go to state 71
-    DIVIDE  shift, and go to state 72
+    EXP     shift, and go to state 53
+    FACT    shift, and go to state 76
+    PLUS    shift, and go to state 55
+    MINUS   shift, and go to state 56
+    TIMES   shift, and go to state 77
+    DIVIDE  shift, and go to state 78
 
-    $default  reduce using rule 61 (boolexpr)
+    $default  reduce using rule 65 (boolexpr)
 
 
-State 104
+State 112
 
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
    40 quantity: quantity EXP expr •
 
-    EXP   shift, and go to state 49
-    FACT  shift, and go to state 70
+    EXP   shift, and go to state 53
+    FACT  shift, and go to state 76
 
     $default  reduce using rule 40 (quantity)
 
 
-State 105
+State 113
 
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
    41 quantity: expr • TIMES quantity
    42         | expr • DIVIDE quantity
    45         | expr • FACT MEASURE
 
-    EXP     shift, and go to state 49
-    FACT    shift, and go to state 50
-    PLUS    shift, and go to state 51
-    MINUS   shift, and go to state 52
-    TIMES   shift, and go to state 53
-    DIVIDE  shift, and go to state 54
+    EXP     shift, and go to state 53
+    FACT    shift, and go to state 54
+    PLUS    shift, and go to state 55
+    MINUS   shift, and go to state 56
+    TIMES   shift, and go to state 57
+    DIVIDE  shift, and go to state 58
 
 
-State 106
+State 114
 
    36 quantity: quantity • PLUS quantity
    36         | quantity PLUS quantity •
@@ -1638,14 +1679,14 @@ State 106
    43         | quantity • TIMES expr
    44         | quantity • DIVIDE expr
 
-    EXP     shift, and go to state 57
-    TIMES   shift, and go to state 60
-    DIVIDE  shift, and go to state 61
+    EXP     shift, and go to state 61
+    TIMES   shift, and go to state 64
+    DIVIDE  shift, and go to state 65
 
     $default  reduce using rule 36 (quantity)
 
 
-State 107
+State 115
 
    36 quantity: quantity • PLUS quantity
    37         | quantity • MINUS quantity
@@ -1656,33 +1697,33 @@ State 107
    43         | quantity • TIMES expr
    44         | quantity • DIVIDE expr
 
-    EXP     shift, and go to state 57
-    TIMES   shift, and go to state 60
-    DIVIDE  shift, and go to state 61
+    EXP     shift, and go to state 61
+    TIMES   shift, and go to state 64
+    DIVIDE  shift, and go to state 65
 
     $default  reduce using rule 37 (quantity)
 
 
-State 108
+State 116
 
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
    41 quantity: expr • TIMES quantity
    42         | expr • DIVIDE quantity
    43         | quantity TIMES expr •
    45         | expr • FACT MEASURE
 
-    EXP   shift, and go to state 49
-    FACT  shift, and go to state 50
+    EXP   shift, and go to state 53
+    FACT  shift, and go to state 54
 
     $default  reduce using rule 43 (quantity)
 
 
-State 109
+State 117
 
    36 quantity: quantity • PLUS quantity
    37         | quantity • MINUS quantity
@@ -1693,31 +1734,31 @@ State 109
    43         | quantity • TIMES expr
    44         | quantity • DIVIDE expr
 
-    EXP  shift, and go to state 57
+    EXP  shift, and go to state 61
 
     $default  reduce using rule 38 (quantity)
 
 
-State 110
+State 118
 
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
    41 quantity: expr • TIMES quantity
    42         | expr • DIVIDE quantity
    44         | quantity DIVIDE expr •
    45         | expr • FACT MEASURE
 
-    EXP   shift, and go to state 49
-    FACT  shift, and go to state 50
+    EXP   shift, and go to state 53
+    FACT  shift, and go to state 54
 
     $default  reduce using rule 44 (quantity)
 
 
-State 111
+State 119
 
    36 quantity: quantity • PLUS quantity
    37         | quantity • MINUS quantity
@@ -1728,244 +1769,268 @@ State 111
    43         | quantity • TIMES expr
    44         | quantity • DIVIDE expr
 
-    EXP  shift, and go to state 57
+    EXP  shift, and go to state 61
 
     $default  reduce using rule 39 (quantity)
 
 
-State 112
-
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   25     | expr TIMES expr •
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-
-    EXP   shift, and go to state 49
-    FACT  shift, and go to state 70
-
-    $default  reduce using rule 25 (expr)
-
-
-State 113
-
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   26     | expr DIVIDE expr •
-   27     | expr • FACT
-   30     | expr • EXP expr
-
-    EXP   shift, and go to state 49
-    FACT  shift, and go to state 70
-
-    $default  reduce using rule 26 (expr)
-
-
-State 114
-
-   34 expr: IF LPAREN boolexpr RPAREN • expr ELSE expr
-
-    UNIT    shift, and go to state 1
-    TEEN    shift, and go to state 2
-    TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
-
-    number   go to state 29
-    integer  go to state 17
-    expr     go to state 123
-
-
-State 115
-
-   33 expr: WHILE LPAREN boolexpr RPAREN • expr
-
-    UNIT    shift, and go to state 1
-    TEEN    shift, and go to state 2
-    TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
-
-    number   go to state 29
-    integer  go to state 17
-    expr     go to state 124
-
-
-State 116
-
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-   53 insertation: INT ID ASSIGN expr •
-   61 boolexpr: expr • RELATION expr
-
-    EXP       shift, and go to state 49
-    FACT      shift, and go to state 70
-    PLUS      shift, and go to state 51
-    MINUS     shift, and go to state 52
-    TIMES     shift, and go to state 71
-    DIVIDE    shift, and go to state 72
-    RELATION  shift, and go to state 55
-
-    $default  reduce using rule 53 (insertation)
-
-
-State 117
-
-   56 insertation: INT ID ASSIGN boolexpr •
-
-    $default  reduce using rule 56 (insertation)
-
-
-State 118
-
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-   54 insertation: DOU ID ASSIGN expr •
-   61 boolexpr: expr • RELATION expr
-
-    EXP       shift, and go to state 49
-    FACT      shift, and go to state 70
-    PLUS      shift, and go to state 51
-    MINUS     shift, and go to state 52
-    TIMES     shift, and go to state 71
-    DIVIDE    shift, and go to state 72
-    RELATION  shift, and go to state 55
-
-    $default  reduce using rule 54 (insertation)
-
-
-State 119
-
-   57 insertation: DOU ID ASSIGN boolexpr •
-
-    $default  reduce using rule 57 (insertation)
-
-
 State 120
 
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-   58 insertation: BOOL BOOL_ID ASSIGN expr •
-   61 boolexpr: expr • RELATION expr
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   49 quantity: parenquantity EXP expr •
 
-    EXP       shift, and go to state 49
-    FACT      shift, and go to state 70
-    PLUS      shift, and go to state 51
-    MINUS     shift, and go to state 52
-    TIMES     shift, and go to state 71
-    DIVIDE    shift, and go to state 72
-    RELATION  shift, and go to state 55
+    EXP   shift, and go to state 53
+    FACT  shift, and go to state 76
 
-    $default  reduce using rule 58 (insertation)
+    $default  reduce using rule 49 (quantity)
 
 
 State 121
 
-   55 insertation: BOOL BOOL_ID ASSIGN boolexpr •
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   27     | expr TIMES expr •
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
 
-    $default  reduce using rule 55 (insertation)
+    EXP   shift, and go to state 53
+    FACT  shift, and go to state 76
+
+    $default  reduce using rule 27 (expr)
 
 
 State 122
 
-   20 fraction: UNIT UNIT •
-   21         | UNIT UNIT • UNIT
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   28     | expr DIVIDE expr •
+   29     | expr • FACT
+   32     | expr • EXP expr
 
-    UNIT  shift, and go to state 125
+    EXP   shift, and go to state 53
+    FACT  shift, and go to state 76
 
-    $default  reduce using rule 20 (fraction)
+    $default  reduce using rule 28 (expr)
 
 
 State 123
 
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-   34     | IF LPAREN boolexpr RPAREN expr • ELSE expr
-
-    EXP     shift, and go to state 49
-    FACT    shift, and go to state 70
-    PLUS    shift, and go to state 51
-    MINUS   shift, and go to state 52
-    TIMES   shift, and go to state 71
-    DIVIDE  shift, and go to state 72
-    ELSE    shift, and go to state 126
-
-
-State 124
-
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-   33     | WHILE LPAREN boolexpr RPAREN expr •
-
-    $default  reduce using rule 33 (expr)
-
-
-State 125
-
-   21 fraction: UNIT UNIT UNIT •
-
-    $default  reduce using rule 21 (fraction)
-
-
-State 126
-
-   34 expr: IF LPAREN boolexpr RPAREN expr ELSE • expr
+   62 statements: IF LPAREN boolexpr RPAREN • expr ELSE expr
 
     UNIT    shift, and go to state 1
     TEEN    shift, and go to state 2
     TEN     shift, and go to state 3
-    NEG     shift, and go to state 25
-    MINUS   shift, and go to state 26
-    LPAREN  shift, and go to state 27
-    IF      shift, and go to state 7
-    WHILE   shift, and go to state 8
-    ID      shift, and go to state 28
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
 
-    number   go to state 29
+    number   go to state 31
     integer  go to state 17
-    expr     go to state 127
+    expr     go to state 132
+
+
+State 124
+
+   61 statements: WHILE LPAREN boolexpr RPAREN • expr
+
+    UNIT    shift, and go to state 1
+    TEEN    shift, and go to state 2
+    TEN     shift, and go to state 3
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
+
+    number   go to state 31
+    integer  go to state 17
+    expr     go to state 133
+
+
+State 125
+
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   55 insertation: INT ID ASSIGN expr •
+   65 boolexpr: expr • RELATION expr
+
+    EXP       shift, and go to state 53
+    FACT      shift, and go to state 76
+    PLUS      shift, and go to state 55
+    MINUS     shift, and go to state 56
+    TIMES     shift, and go to state 77
+    DIVIDE    shift, and go to state 78
+    RELATION  shift, and go to state 59
+
+    $default  reduce using rule 55 (insertation)
+
+
+State 126
+
+   58 insertation: INT ID ASSIGN boolexpr •
+
+    $default  reduce using rule 58 (insertation)
 
 
 State 127
 
-   23 expr: expr • PLUS expr
-   24     | expr • MINUS expr
-   25     | expr • TIMES expr
-   26     | expr • DIVIDE expr
-   27     | expr • FACT
-   30     | expr • EXP expr
-   34     | IF LPAREN boolexpr RPAREN expr ELSE expr •
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   56 insertation: DOU ID ASSIGN expr •
+   65 boolexpr: expr • RELATION expr
 
-    $default  reduce using rule 34 (expr)
+    EXP       shift, and go to state 53
+    FACT      shift, and go to state 76
+    PLUS      shift, and go to state 55
+    MINUS     shift, and go to state 56
+    TIMES     shift, and go to state 77
+    DIVIDE    shift, and go to state 78
+    RELATION  shift, and go to state 59
+
+    $default  reduce using rule 56 (insertation)
+
+
+State 128
+
+   59 insertation: DOU ID ASSIGN boolexpr •
+
+    $default  reduce using rule 59 (insertation)
+
+
+State 129
+
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   60 insertation: BOOL BOOL_ID ASSIGN expr •
+   65 boolexpr: expr • RELATION expr
+
+    EXP       shift, and go to state 53
+    FACT      shift, and go to state 76
+    PLUS      shift, and go to state 55
+    MINUS     shift, and go to state 56
+    TIMES     shift, and go to state 77
+    DIVIDE    shift, and go to state 78
+    RELATION  shift, and go to state 59
+
+    $default  reduce using rule 60 (insertation)
+
+
+State 130
+
+   57 insertation: BOOL BOOL_ID ASSIGN boolexpr •
+
+    $default  reduce using rule 57 (insertation)
+
+
+State 131
+
+   22 fraction: UNIT UNIT •
+   23         | UNIT UNIT • UNIT
+
+    UNIT  shift, and go to state 134
+
+    $default  reduce using rule 22 (fraction)
+
+
+State 132
+
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   62 statements: IF LPAREN boolexpr RPAREN expr • ELSE expr
+
+    EXP     shift, and go to state 53
+    FACT    shift, and go to state 76
+    PLUS    shift, and go to state 55
+    MINUS   shift, and go to state 56
+    TIMES   shift, and go to state 77
+    DIVIDE  shift, and go to state 78
+    ELSE    shift, and go to state 135
+
+
+State 133
+
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   61 statements: WHILE LPAREN boolexpr RPAREN expr •
+
+    EXP     shift, and go to state 53
+    FACT    shift, and go to state 76
+    PLUS    shift, and go to state 55
+    MINUS   shift, and go to state 56
+    TIMES   shift, and go to state 77
+    DIVIDE  shift, and go to state 78
+
+    $default  reduce using rule 61 (statements)
+
+
+State 134
+
+   23 fraction: UNIT UNIT UNIT •
+
+    $default  reduce using rule 23 (fraction)
+
+
+State 135
+
+   62 statements: IF LPAREN boolexpr RPAREN expr ELSE • expr
+
+    UNIT    shift, and go to state 1
+    TEEN    shift, and go to state 2
+    TEN     shift, and go to state 3
+    NEG     shift, and go to state 27
+    MINUS   shift, and go to state 28
+    LPAREN  shift, and go to state 29
+    ID      shift, and go to state 30
+
+    number   go to state 31
+    integer  go to state 17
+    expr     go to state 136
+
+
+State 136
+
+   25 expr: expr • PLUS expr
+   26     | expr • MINUS expr
+   27     | expr • TIMES expr
+   28     | expr • DIVIDE expr
+   29     | expr • FACT
+   32     | expr • EXP expr
+   62 statements: IF LPAREN boolexpr RPAREN expr ELSE expr •
+
+    EXP     shift, and go to state 53
+    FACT    shift, and go to state 76
+    PLUS    shift, and go to state 55
+    MINUS   shift, and go to state 56
+    TIMES   shift, and go to state 77
+    DIVIDE  shift, and go to state 78
+
+    $default  reduce using rule 62 (statements)

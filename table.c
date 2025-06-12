@@ -99,7 +99,7 @@ bool getBoolean(struct Node *list, char *name)
     exit(1);
 }
 
-/*struct Node *deleteItem(struct Node *list, char *name)
+struct Node *deleteItem(struct Node *list, char *name)
 {
     if (list != NULL)
     {
@@ -122,7 +122,7 @@ bool getBoolean(struct Node *list, char *name)
     }
     fprintf(stderr, "There is no Value with the name %s", name);
     exit(1);
-}*/
+}
 
 struct Node *updateItem(struct Node *list, char *name, char *value)
 {
