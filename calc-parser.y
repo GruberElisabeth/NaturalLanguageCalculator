@@ -57,11 +57,10 @@ struct Node* table;
 %right '='
 %left PLUS MINUS
 %left TIMES DIVIDE
+%nonassoc RELATION
 %right NEG
 %right EXP
-
 %nonassoc MEASURE 
-
 %nonassoc FACT
 %nonassoc LOWEST
 %start line 
@@ -85,7 +84,7 @@ line
                 printf("Result: false\n");
         }
       | line boolexpr '\n' {
-            if ($1)
+            if ($2)
                 printf("Result: true\n");
             else
                 printf("Result: false\n");
@@ -114,7 +113,7 @@ expr  : number              {$$ = $1;}
       | expr MINUS expr     {$$ = $1 - $3;}
       | expr TIMES expr     {$$ = $1 * $3;}
       | expr DIVIDE expr    {$$ = $1 / $3;}
-      | expr FACT {$$ = factorial($1);}
+      | expr FACT           {$$ = factorial($1);}
       | NEG expr                        {$$ = - $2;}
       | MINUS expr %prec NEG            {$$ = - $2;}
       | expr EXP expr %prec EXP         {$$ = pow($1, $3);}
