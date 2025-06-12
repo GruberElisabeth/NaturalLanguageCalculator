@@ -1,0 +1,29 @@
+# --- C language build files ---
+*.o
+*.obj
+*.so
+*.exe
+*.out
+*.a
+*.lib
+*.dll
+
+# --- VS Code settings ---
+.vscode/
+
+# --- OS-specific ---
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# --- Zone.Identifier files ---
+*.Zone.Identifier
+
+# --- Logs and temp ---
+*.log
+*.tmp
