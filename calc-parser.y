@@ -83,7 +83,6 @@ line
                 printf("Result: true\n");
             else
                 printf("Result: false\n");
-            exit(0);
         }
       | line boolexpr '\n' {
             if ($1)
