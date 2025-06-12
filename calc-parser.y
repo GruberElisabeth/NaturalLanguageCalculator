@@ -134,7 +134,7 @@ quantity: number MEASURE                { $2.value = $1; $$ = $2; }
         | quantity DIVIDE quantity {
                                         if ($3.value == 0) {
                                             fprintf(stderr, "Error: Division by zero\n");
-                                            exit(1);  // Or handle the error more gracefully if preferred
+                                            exit(1);
                                         }
                                         $$ = calc_quantity($1, $3, '/');
                                     }

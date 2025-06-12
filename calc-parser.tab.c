@@ -1476,7 +1476,7 @@ yyreduce:
                                    {
                                         if ((yyvsp[0].quantity).value == 0) {
                                             fprintf(stderr, "Error: Division by zero\n");
-                                            exit(1);  // Or handle the error more gracefully if preferred
+                                            exit(1);
                                         }
                                         (yyval.quantity) = calc_quantity((yyvsp[-2].quantity), (yyvsp[0].quantity), '/');
                                     }
