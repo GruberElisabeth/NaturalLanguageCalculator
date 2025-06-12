@@ -20,13 +20,7 @@ struct Node* table;
 
 
 
-#define YYDEBUG 1  // Enable debug mode
-
-
-
 %}
-
-%debug
 
 %union {
         double value;
