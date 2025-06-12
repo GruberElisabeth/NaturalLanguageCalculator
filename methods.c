@@ -182,7 +182,7 @@ void print_quantity(Quantity quantity) {
         return;
     }
 
-    printf("Result: %s", number_to_word_double(quantity.value));
+    printf("Result: %s ", number_to_word_double(quantity.value));
 
     if (quantity.dimension != 0) {
         printf("%s", quantity.unit);
@@ -222,7 +222,13 @@ Quantity calc_quantity(Quantity q1, Quantity q2, char op_char) {
         case '+': new_value = q1.value + converted.value; new_dimension = q1.dimension; break;
         case '-': new_value = q1.value - converted.value; new_dimension = q1.dimension; break;
         case '*': new_value = q1.value * converted.value; new_dimension = q1.dimension + q2.dimension; break;
-        case '/': new_value = q1.value / converted.value; new_dimension = q1.dimension - q2.dimension; break;
+        case '/':  if (converted.value == 0) {
+                        fprintf(stderr, "Error: Division by zero\n");
+                        exit(1);
+                    }
+                    new_value = q1.value / converted.value; 
+                    new_dimension = q1.dimension - q2.dimension; 
+                    break;
         default: fprintf(stderr, "Internal error: Unknown operator"); exit(1);
     }
 

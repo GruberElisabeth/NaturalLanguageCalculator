@@ -112,7 +112,13 @@ expr  : number              {$$ = $1;}
       | expr PLUS expr      {$$ = $1 + $3;}
       | expr MINUS expr     {$$ = $1 - $3;}
       | expr TIMES expr     {$$ = $1 * $3;}
-      | expr DIVIDE expr    {$$ = $1 / $3;}
+      | expr DIVIDE expr    {
+                                if($3 == 0) {
+                                        fprintf(stderr, "Error: Division by zero\n");
+                                        exit(1);
+                                }
+                                $$ = $1 / $3;
+                            }
       | expr FACT           {$$ = factorial($1);}
       | NEG expr                        {$$ = - $2;}
       | MINUS expr %prec NEG            {$$ = - $2;}
@@ -125,12 +131,32 @@ quantity: number MEASURE                { $2.value = $1; $$ = $2; }
         | quantity PLUS quantity        { $$ = calc_quantity($1, $3, '+'); }
         | quantity MINUS quantity       { $$ = calc_quantity($1, $3, '-'); }
         | quantity TIMES quantity       { $$ = calc_quantity($1, $3, '*');}
-        | quantity DIVIDE quantity      { $$ = calc_quantity($1, $3, '/');}
+        | quantity DIVIDE quantity {
+                                        if ($3.value == 0) {
+                                            fprintf(stderr, "Error: Division by zero\n");
+                                            exit(1);  // Or handle the error more gracefully if preferred
+                                        }
+                                        $$ = calc_quantity($1, $3, '/');
+                                    }
         | quantity EXP expr %prec EXP   {$1.dimension = $3; $$ = $1;}
         | expr TIMES quantity           {$3.value = ($1 * $3.value); $$ = $3; }
-        | expr DIVIDE quantity          {$3.value = ($1 / $3.value); $$ = $3; }
+        | expr DIVIDE quantity {
+                                    if ($3.value == 0) {
+                                        fprintf(stderr, "Error: Division by zero\n");
+                                        exit(1);
+                                    }
+                                    $3.value = ($1 / $3.value);
+                                    $$ = $3;
+                                }
         | quantity TIMES expr           {$1.value = ($3 * $1.value); $$ = $1; }
-        | quantity DIVIDE expr          {$1.value = ($3 / $1.value); $$ = $1; }
+        | quantity DIVIDE expr {
+                                    if ($3 == 0) {
+                                        fprintf(stderr, "Error: Division by zero\n");
+                                        exit(1);
+                                    }
+                                    $1.value = ($1.value / $3);
+                                    $$ = $1;
+                                }
         | expr FACT MEASURE             {$3.value = factorial($1); $$ = $3;}
         | NEG expr MEASURE              {$3.value = - $2; $$ = $3;}
         | MINUS expr MEASURE %prec NEG  {$3.value = - $2; $$ = $3;}
