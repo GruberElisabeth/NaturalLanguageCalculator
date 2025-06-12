@@ -75,8 +75,6 @@ Quantity convert_quantity(Quantity from_q, const char* to_unit_name) {
     return result;
 }
 
-
-
 /*methods to convert result back into natural language*/
 const char* units[] = {
     "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
@@ -94,32 +92,33 @@ const char* number_to_word(int digit) {
     return units[digit];
 }
     
-void number_to_words_int(int num, char* buffer){
+void number_to_words_int(long long num, char* buffer) {
     if (num == 0) {
-        strcat(buffer, "zero");
+        strcat(buffer, "zero ");
         return;
     }
-if (num >= 1000000000) {
+
+    if (num >= 1000000000) {
         number_to_words_int(num / 1000000000, buffer);
-        strcat(buffer, " billion ");
+        strcat(buffer, "billion ");
         num %= 1000000000;
     }
 
     if (num >= 1000000) {
         number_to_words_int(num / 1000000, buffer);
-        strcat(buffer, " million ");
+        strcat(buffer, "million ");
         num %= 1000000;
     }
 
     if (num >= 1000) {
         number_to_words_int(num / 1000, buffer);
-        strcat(buffer, " thousand ");
+        strcat(buffer, "thousand ");
         num %= 1000;
     }
 
     if (num >= 100) {
-        strcat(buffer, units[num / 100]);
-        strcat(buffer, " hundred ");
+        number_to_words_int(num / 100, buffer);
+        strcat(buffer, "hundred ");
         num %= 100;
     }
 
@@ -139,8 +138,9 @@ if (num >= 1000000000) {
     }
 }
 
+/*method to convert fractional back into natural language*/
 char* number_to_word_double(double num) {
-    static char result[256];
+    static char result[1024];
     result[0] = '\0';
 
     if (num < 0) {
@@ -148,13 +148,13 @@ char* number_to_word_double(double num) {
         num = -num;
     }
 
-    int integer_part = (int)num;
+    long long integer_part = (long long)num;
     double fractional_part = num - integer_part;
 
     number_to_words_int(integer_part, result);
     
     if (fractional_part > 0) {
-        strcat(result, "point");
+        strcat(result, "point ");
 
         fractional_part = fractional_part * 1000;
         int frac_int = (int)(fractional_part + 0.5);

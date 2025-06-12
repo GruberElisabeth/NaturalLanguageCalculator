@@ -21,7 +21,7 @@ Quantity convert_quantity(Quantity from_q, const char* to_unit_name);
 
 const char* number_to_word(int digit);
 
-void number_to_words_int(int num, char* buffer);
+void number_to_words_int(long long num, char* buffer);
 
 char* number_to_word_double(double num);
 

@@ -30,7 +30,7 @@ struct Node* table;
         Quantity quantity;
        }
 
-%token <value> UNIT TEEN TEN HUNDRED INTEGER DOUBLE NUM
+%token <value> UNIT TEEN TEN HUNDRED THOUSAND MILLION BILLION INTEGER DOUBLE NUM
 %token <op> POINT EXP FACT NEG PLUS MINUS TIMES DIVIDE LPAREN RPAREN
 %token RATIO
 %token IF
@@ -48,8 +48,10 @@ struct Node* table;
 %type <quantity> quantity parenquantity
 %type <value> number
 %type <value> line
-%type <value> integer
 %type <value> fraction
+%type <value> integer
+%type <value> group
+%type <value> hundrets
 %type <condition> boolexpr
 %type <lexeme> assignment
 %type <lexeme> insertation
@@ -89,24 +91,36 @@ line
             else
                 printf("Result: false\n");
         }
-      
       ;
+
 number  : integer                       {$$ = $1;}
         | integer POINT fraction        {$$ = $1 + $3;}
         ;
 
-integer : UNIT                          {$$ = $1;}
+integer : group                         {$$ = $1;}
+        | group hundrets                {$$ = $1 * $2;}
+        | group hundrets integer        {$$ = $1 * $2 + $3;}
+        ;
+
+group   : UNIT                          {$$ = $1;}
         | TEEN                          {$$ = $1;}
         | TEN                           {$$ = $1;}
         | TEN UNIT                      {$$ = $1 + $2;}
         | UNIT HUNDRED                  {$$ = $1 * $2;}
-        | UNIT HUNDRED integer          {$$ = $1 * $2 + $3;}
+        | UNIT HUNDRED group            {$$ = $1 * $2 + $3;}
         ;
+
+hundrets
+    : THOUSAND                   {$$ = 1000;}
+    | MILLION                    {$$ = 1000000;}
+    | BILLION                    {$$ = 1000000000;}
+    ;
 
 fraction    : UNIT                      {$$ = $1 * 0.1;}
             | UNIT UNIT                 {$$ = $1 * 0.1 + $2 * 0.01;}
             | UNIT UNIT UNIT            {$$ = $1 * 0.1 + $2 * 0.01 + $3 * 0.001;}
             ;
+
 
 expr  : number              {$$ = $1;}
       | expr PLUS expr      {$$ = $1 + $3;}

@@ -24,7 +24,10 @@ char* remove_plural(const char* str) {
 UNIT            zero|one|two|three|four|five|six|seven|eight|nine|first|second|third|fifth|eighth|ninth
 TEEN            ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twelfth
 TEN             twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|twentieth|thirtieth|fortieth|fiftieth|sixtieth|seventieth|eightieth|ninetieth
-HUNDRED         hundred|thousand|million|billion
+HUNDRED         hundred
+THOUSAND        thousand
+MILLION         million
+BILLION         billion
 POINT           point
 EXP             (to the power|power|to the)
 FACT            factorial
@@ -67,19 +70,19 @@ BOOLEAN         (true|false)
 \-                 {/*ignore*/}
 
 "zero"              {yylval.value = 0; return UNIT;}
-"one"|"first"       {yylval.value = 1; return UNIT;}
+"one"               {yylval.value = 1; return UNIT;}
 "two"               {yylval.value = 2; return UNIT;}
-"three"|"third"     {yylval.value = 3; return UNIT;}
+"three"             {yylval.value = 3; return UNIT;}
 "four"              {yylval.value = 4; return UNIT;}
-"five"|"fifth"      {yylval.value = 5; return UNIT;}
+"five"              {yylval.value = 5; return UNIT;}
 "six"               {yylval.value = 6; return UNIT;}
 "seven"             {yylval.value = 7; return UNIT;}
-"eight"|"eighth"    {yylval.value = 8; return UNIT;}
-"nine"|"ninth"      {yylval.value = 9; return UNIT;}
+"eight"             {yylval.value = 8; return UNIT;}
+"nine"              {yylval.value = 9; return UNIT;}
 
 "ten"               {yylval.value = 10; return TEEN;}
 "eleven"            {yylval.value = 11; return TEEN;}
-"twelve"|"twelfth"  {yylval.value = 12; return TEEN;}
+"twelve"            {yylval.value = 12; return TEEN;}
 "thirteen"          {yylval.value = 13; return TEEN;}
 "fourteen"          {yylval.value = 14; return TEEN;}
 "fifteen"           {yylval.value = 15; return TEEN;}
@@ -88,24 +91,24 @@ BOOLEAN         (true|false)
 "eighteen"          {yylval.value = 18; return TEEN;}
 "nineteen"          {yylval.value = 19; return TEEN;}
 
-"twenty"|"twentieth"    {yylval.value = 20; return TEN;}
-"thirty"|"thirtieth"    {yylval.value = 30; return TEN;}
-"forty"|"fortieth"      {yylval.value = 40; return TEN;}
-"fifty"|"fiftieth"      {yylval.value = 50; return TEN;}
-"sixty"|"sixtieth"      {yylval.value = 60; return TEN;}
-"seventy"|"seventieth"  {yylval.value = 70; return TEN;}
-"eighty"|"eightieth"    {yylval.value = 80; return TEN;}
-"ninety"|"ninetieth"    {yylval.value = 90; return TEN;}
+"twenty"            {yylval.value = 20; return TEN;}
+"thirty"            {yylval.value = 30; return TEN;}
+"forty"             {yylval.value = 40; return TEN;}
+"fifty"             {yylval.value = 50; return TEN;}
+"sixty"             {yylval.value = 60; return TEN;}
+"seventy"           {yylval.value = 70; return TEN;}
+"eighty"            {yylval.value = 80; return TEN;}
+"ninety"            {yylval.value = 90; return TEN;}
 
-"hundred"       {yylval.value = 100; return HUNDRED;}
-"thousand"      {yylval.value = 1000; return HUNDRED;}
-"million"       {yylval.value = 1000000; return HUNDRED;}
-"billion"       {yylval.value = 1000000000; return HUNDRED;}
+"hundred"           {yylval.value = 100; return HUNDRED;}
+"thousand"          {yylval.value = 1000; return THOUSAND;}
+"million"           {yylval.value = 1000000; return MILLION;}
+"billion"           {yylval.value = 1000000000; return BILLION;}
 
-"plus"              { yylval.op = '+'; return PLUS; }
-"minus"             { yylval.op = '-';  return MINUS; }
-"times"             { yylval.op = '*'; return TIMES; }
-"divided by"            { yylval.op = '/'; return DIVIDE; }
+"plus"              {yylval.op = '+'; return PLUS;}
+"minus"             {yylval.op = '-';  return MINUS;}
+"times"             {yylval.op = '*'; return TIMES;}
+"divided by"        {yylval.op = '/'; return DIVIDE;}
 
 "open"[ ]*"parenthesis"             {yylval.op = '('; return LPAREN;}
 "close"[ ]*"parenthesis"            {yylval.op = ')'; return RPAREN;}
