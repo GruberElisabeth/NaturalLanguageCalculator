@@ -83,7 +83,7 @@ const char* units[] = {
 };
 
 const char* teens[] = {
-    "ten", "eleven", "twelve", "thirteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"
+    "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"
 };
     
 const char* tens[] = {
@@ -233,8 +233,6 @@ Quantity calc_quantity(Quantity q1, Quantity q2, char op_char) {
     result.unit = q1.unit;
     result.type = q1.type;
 
-    free(q2.unit);
-    free(q2.type);
     free(converted.unit);
     free(converted.type);
 

@@ -74,7 +74,7 @@ line
       | statements '\n' {$$ = $1; printf("Result: %s\n", number_to_word_double($1));}
       | line statements '\n' {$$ = $2; printf("Result: %s\n", number_to_word_double($2));}
       | expr '\n'      {$$ = $1; printf("Result: %s\n", number_to_word_double($1));}
-      | line expr '\n'  {$$ = $2; printf("Result: %s\n", number_to_word_double($2));}
+      | line expr '\n'  {$$ = $2;fprintf(stderr, "DEBUG: Parser calculated expr value as: %f\n", $2); printf("Result: %s\n", number_to_word_double($2)); }
       | quantity '\n'      { print_quantity($1); $$ = $1.value; }
       | line quantity '\n' { print_quantity($2); $$ = $2.value; }
       | boolexpr '\n' {
