@@ -35,7 +35,7 @@ NUM             ({INTEGER} | {DOUBLE})
 EXPONENTIAL     {INTEGER}{EXP}{INTEGER}
 FACTORIAL       {INTEGER}{FACT}
 NEGATION        {NEG}{INTEGER}
-OPERATOR        plus|minus|times|divide by
+OPERATOR        plus|minus|times|divided by
 LPAREN          open[ \t]*parenthesis
 RPAREN          close[ \t]*parenthesis
 RELATION        greater|smaller|equal|equals

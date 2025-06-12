@@ -213,6 +213,7 @@ int main(void)
     while(1){
         yyparse();
     }
+    printf("\n")
     return 0;
 }
 
