@@ -159,6 +159,7 @@ quantity: number MEASURE                { $2.value = $1; $$ = $2; }
                                         fprintf(stderr, "Error: Division by zero\n");
                                         exit(1);
                                     }
+                                    $3.dimension = - ($3.dimension);
                                     $3.value = ($1 / $3.value);
                                     $$ = $3;
                                 }

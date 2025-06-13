@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "methods.h"
 
+// Contains all necessary information to convert units of measurement
 
 const UnitConversion conversion_table[] = {
     // Mass (base: gram)
@@ -38,6 +39,7 @@ const UnitConversion conversion_table[] = {
     {NULL, NULL, 0.0}
 };
 
+// gets the information of the paramater unit and returns the UnitConversion object from the conversion table
 const UnitConversion* find_unit_info(const char* unit_name) {
     char temp_unit[64];
     strncpy(temp_unit, unit_name, sizeof(temp_unit) - 1);
@@ -51,7 +53,7 @@ const UnitConversion* find_unit_info(const char* unit_name) {
     }
     return NULL;
 }
-
+// converts the unit of a given quantitiy into another given unit of measurement of the same type
 Quantity convert_quantity(Quantity from_q, const char* to_unit_name) {
     const UnitConversion* from_info = find_unit_info(from_q.unit);
     const UnitConversion* to_info = find_unit_info(to_unit_name);
@@ -176,6 +178,7 @@ char* number_to_word_double(double num) {
     return result;
 }
 
+// Special rules to print quantities
 void print_quantity(Quantity quantity) {
     if (quantity.unit == NULL) {
         printf("(null quantity)\n");
@@ -204,6 +207,7 @@ void print_quantity(Quantity quantity) {
     printf("\n");
 }
 
+// COntains the logic of all four basic operations for quantities: subtractio, addition, multiplication, division
 Quantity calc_quantity(Quantity q1, Quantity q2, char op_char) {
     if (strcmp(q1.type, q2.type) != 0) {
         fprintf(stderr, "Cannot perform operation on quantities of different types");
