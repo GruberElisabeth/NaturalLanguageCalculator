@@ -223,6 +223,7 @@ insertation : INT ID ASSIGN expr { char buffer[20];
 
 statements  : WHILE LPAREN boolexpr RPAREN expr %prec LOWEST    {$$ = $5;}      
             | IF LPAREN boolexpr RPAREN expr ELSE expr %prec LOWEST   {$$ = $3?$5:$7;}
+            ;
 
 boolexpr    : BOOLEAN       {$$ = $1;}
             | BOOL_ID       {$$ = getBoolean(table, $1);}
